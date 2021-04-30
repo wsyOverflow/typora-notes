@@ -1,4 +1,4 @@
-# 辐射度量学基础 
+#                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       辐射度量学基础 
 
 Whitted style 光线追踪使用 Blinn-Phong 着色模型，着色效果不真实。因此有提出基于辐射度量学的着色模型，以物理正确的方式进行光照计算。
 
@@ -45,6 +45,18 @@ $$\Phi = \frac{dQ}{dt}$$
 - 单位立体角：$d\omega = \frac{dA}{A^2}=sin\theta d\theta d\phi$
 
 - 球面的微分立体角：$\Omega=\int_{S^2}d\omega=\int_0^{2\pi}\int_0^{\pi}sin\theta d\theta d\phi=4\pi$，其中 $S^2$ 是求面积
+
+  > $dA$ 的证明，$dA$ 可看作 $d\theta$ 和 $d\phi$ 对应的微分弧组成的小矩形，如下图中红色弧线与蓝色弧线
+  >
+  > <img src=".\Basic Radiometry.assets\2.PNG" alt="2" style="zoom:25%;" />
+  >
+  > 其中蓝色弧线位于半径为 $r_\phi$ 的小圆上，而红色弧线位于半径为 $r_\theta$ 的大圆上，又知道 $sin\theta = \frac{r_\phi}{r_\theta}$，由弧长公式有
+  >
+  > 红色弧：$r_\theta d\theta$，蓝色弧：$r_\phi d\phi=r_\theta sin\theta d\phi$。
+  >
+  > 因此 $dA=(r_\theta d\theta)(r_\theta sin\theta d\phi)=r_\theta^2sin\theta d\theta d\phi$。
+  >
+  > > $sin\theta$ 的直观理解是，越靠近极点位置，$r_\phi$ 越小，因此微分面积也越小；越靠近赤道位置，$r_\phi$ 越大，因此微分面积也越大
 
 $\omega$ 作为单位立体角的方向向量
 
