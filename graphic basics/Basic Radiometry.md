@@ -48,7 +48,7 @@ $$\Phi = \frac{dQ}{dt}$$
 
   > $dA$ 的证明，$dA$ 可看作 $d\theta$ 和 $d\phi$ 对应的微分弧组成的小矩形，如下图中红色弧线与蓝色弧线
   >
-  > <img src=".\Basic Radiometry.assets\2.PNG" alt="2" style="zoom:25%;" />
+  > <img src="Basic Radiometry.assets\2.PNG" alt="2" style="zoom:25%;" />
   >
   > 其中蓝色弧线位于半径为 $r_\phi$ 的小圆上，而红色弧线位于半径为 $r_\theta$ 的大圆上，又知道 $sin\theta = \frac{r_\phi}{r_\theta}$，由弧长公式有
   >
@@ -78,13 +78,13 @@ $\omega$ 作为单位立体角的方向向量
 
 Lambert 余弦定律：表面辐照度与光方向和表面法线夹角的余弦值成正比
 
-<img src="D:\Study\Paper-reading\graphics\typora-notes\graphic basics\Basic Radiometry.assets\image-20210418113052481.png" alt="image-20210418113052481" style="zoom:25%;" />
+<img src="Basic Radiometry.assets\image-20210418113052481.png" alt="image-20210418113052481" style="zoom:25%;" />
 
 > 这里 irrandiance 是单位面积入射到一点的辐射通量，$cos\theta$ 调整的是方向 $l$ 上入射功率的贡献，将方向 $l$ 上的辐射通量投影到接收点的法线方向 $n$ 上。
 
 Irradiance 衰减：$E=\frac{\Phi}{4\pi r^2}$ ，$\Phi$ 记录的是单位半径球面在单位时间内所接收的能量的功率。二维示意图如下
 
-<img src="D:\Study\Paper-reading\graphics\typora-notes\graphic basics\Basic Radiometry.assets\image-20210418113447525.png" alt="image-20210418113447525" style="zoom:25%;" />
+<img src="Basic Radiometry.assets\image-20210418113447525.png" alt="image-20210418113447525" style="zoom:25%;" />
 
 
 
@@ -92,25 +92,19 @@ Irradiance 衰减：$E=\frac{\Phi}{4\pi r^2}$ ，$\Phi$ 记录的是单位半径
 
 Radiance 用于描述光在环境中的分布的基本场量。辐射(Radiance)或亮度(luminance) ：是指一个表面在**每单位立体角、每单位投影面积**上所发射(emitted)、反射(reflected)、透射(transmitted)或接收(received)的辐射通量(功率)。
 
-$$L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$$，Light traveling along a Ray
-
-<img src=".\Basic Radiometry.assets\image-20210418113916011.png" alt="image-20210418113916011" style="zoom:25%;" />
+$$L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$$，Light traveling along a Ray                  <img src="Basic Radiometry.assets\image-20210418113916011.png" alt="image-20210418113916011" style="zoom:25%;" />
 
 > 这里是从表面点 $p$ 沿着其某一单位立体角方向 $\omega$ 发出的功率，$cos\theta$ 是将辐射面投影到以 $\omega$ 为法线的平面。
 
 - Incident Radiance(入射辐射)：到达表面的**单位立体角**的 irradiance(辐照度)，即 radiance。
 
-<img src=".\Basic Radiometry.assets\image-20210418140012081.png" alt="image-20210418140012081" style="zoom:25%;" />
-
-​          $$L(p,\omega)=\frac{dE(p)}{d\omega cos\theta}$$
+​          $$L(p,\omega)=\frac{dE(p)}{d\omega cos\theta}$$                                                                    <img src=".\Basic Radiometry.assets\image-20210418140012081.png" alt="image-20210418140012081" style="zoom:25%;" />
 
 > 沿着 $\omega$ 方向到达表面 $p$ 点的辐射，$cos\theta$ 将入射方向投影到表面点 $p$ 法线方向
 
 - Exiting Radiance(出射辐射)：离开表面的**单位投影面积**的 Radiance Intensity(辐射强度)。如面光源
 
-<img src=".\Basic Radiometry.assets\image-20210418141032723.png" alt="image-20210418141032723" style="zoom:25%;" />
-
-​		$$L(p,\omega)=\frac{dI(p,\omega)}{dAcos\theta}$$
+​		$$L(p,\omega)=\frac{dI(p,\omega)}{dAcos\theta}$$                                                                    <img src="Basic Radiometry.assets\image-20210418141032723.png" alt="image-20210418141032723" style="zoom:25%;" />
 
 **注意**：Incident Radiance 与 Exiting Radiance 虽然表达式形式有所不同，但代入后最终都可转化为 $\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$。
 
@@ -121,9 +115,5 @@ $$L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$$，Light travelin
 - Irradiance：在面积 $dA$ 的总辐射通量
 - Radiance：在面积 $dA$ 、方向 $d\omega$ 上的辐射通量
 
-<img src=".\Basic Radiometry.assets\image-20210418143001958.png" alt="image-20210418143001958" style="zoom:25%;" />
-
-​			$$dE(p,\omega)=L_i(p,\omega)cos\theta \space d\omega$$
-
-​			$$E(p,\omega)=\int_{H^2}L_i(p,\omega)cos\theta \space d\omega$$
+​			$$dE(p,\omega)=L_i(p,\omega)cos\theta \space d\omega \\ E(p,\omega)=\int_{H^2}L_i(p,\omega)cos\theta \space d\omega$$                     <img src=".\Basic Radiometry.assets\image-20210418143001958.png" alt="image-20210418143001958" style="zoom:25%;" />
 
