@@ -1,4 +1,4 @@
-## 光线与三角形求交点
+## 光线与三角形和bounding box 求交
 
 ### Preliminary
 
@@ -48,7 +48,7 @@ $$\begin{cases} \alpha=\frac{A_A}{A_A+A_B+A_C} \\ \beta=\frac{A_B}{A_A+A_B+A_C} 
 
 透视/正交投影将三维降为了二维，因此重心坐标会发生改变。也就是说，三维空间得到的重心坐标不能用于二维空间，反之亦然。
 
-### 求交点
+### 光线与三角形求交点
 
 #### 1. Moller Trumbove Algorithm
 
@@ -120,7 +120,7 @@ $$\mathbf{S}=\begin{pmatrix} 1&0&-\mathbf{d}_x/\mathbf{d}_z&0 \\ 0&1&-\mathbf{d}
 
 $$\begin{cases} e_0(P)=(P_{1x}-P_{0x})(P_y-P_{0y})-(P_{1y}-P_{0y})(P_x-P_{0x}) \\  e_1(P)=(P_{2x}-P_{1x})(P_y-P_{1y})-(P_{2y}-P_{1y})(P_x-P_{1x}) \\ e_2(P)=(P_{0x}-P_{2x})(P_y-P_{2y})-(P_{0y}-P_{2y})(P_x-P_{2x})\end{cases}$$
 
-如果 $e_0(P),e_1(P),e_2(P)$ 三者符号相同，那么证明 $P$ 点位于三角形内部。
+如果 $e_0(P),e_1(P),e_2(P)$ 三者符号相同，那么证明 $P$ 点位于三角形内部。$e_0,e_1,e_2$ 在三角形所在平面的法向量垂直于 $z$ 轴时都为 $0$ ，此时忽略。其他情况，$e_0,e_1,e_2$ 都不应为 $0$，但可能由于浮点精度而为 $0$，此时无法判断 $P$ 点是否在三角形内部。
 
 由于第 (1) 步的特殊处理，只需要判断 $(0,0)$ 点是否位于三角形内，即 $P=(0,0)$，带入 singed edge function 有，
 
@@ -140,9 +140,30 @@ $$\begin{cases} e_0(P)=	P_{0x}P_{1y}-P_{0y}P_{1x} \\  e_1(P)=P_{1x}P_{2y}-P_{1y}
 
 此过程得到的重心坐标可直接应用于贴图坐标的插值，因为**重心坐标具有仿射不变性**。
 
+### 光线与 bounding box 求交
 
+Bounding box 可以看作是三个 slabs 组成，每个 slab 由一对对齐于某一坐标轴的平行平面组成。因此 Bounding box 可由两个极端点定义 pMin$(x_{min},y_{min},z_{min})$ 和 pMax$(x_{max},y_{max},z_{max})$ 。为了求光线与 Bounding box 的交点，先求光线与这三个 slabs 的交点。由 slab 对齐坐标轴的特点，与 slab 的求交简单而高效。
 
+光线与 Bounding box 求交算法步骤：算法开始有光线参数的有效区间设置，通常为 $(0,\infty)$。光线与每一个 slab 求交都可得到两个交点，排除掉有效区间之外的交点。可由剩下的交点进行一些比较(交点分为两类:入点和出点。求入点中的最大值，出点中的最小值)得到光线位于 Bounding box 内部的参数范围。如下图所示
 
+<img src="Ray-Triangle Intersection.assets/image-20210511101604079.png" alt="image-20210511101604079" style="zoom:50%;" />
 
+求交点即解光线方程和平面方程组成的方程组，假设平面方程为 $ax+by+cz+d=0$，带入光线方程可列
 
+​				$$a(O+t\mathbf{d}_x)+b(O+t\mathbf{d}_y)+c(O+t\mathbf{d}_z)+d = 0$$
 
+解方程组：$t=\frac{-d-((a,b,c)\cdot O)}{((a,b,c)\cdot \mathbf{d})}$
+
+对于垂直于 $x$ 轴的 slab 的两个平面的法向量都为 $(1,0,0)$ ，并且分别过点 $(x_{min},0,0),(x_{max},0,0)$。代入可得
+
+​					$t=\frac{x_{min}-O_x}{\mathbf{d}_x}$ 或 $\frac{x_{max}-O_x}{\mathbf{d}_x}$
+
+我们需要从得到的所有交点中通过一系列比较得到光线位于 Bounding box 内部的参数范围，而进行这一步骤的前提是将交点区分为两类：入点和出点。所求交点为入点$t_{near}$还是出点$t_{far}$可由光线方向与平面法向量的关系分辨。由上述，**每个 slab 的法向量都默认定义为其对应的坐标轴的正向**，因此我们只需看光线方向的符号即可。
+
+<img src="Ray-Triangle Intersection.assets/image-20210511105516454.png" alt="image-20210511105516454" style="zoom:50%;" />
+
+如上图所示，图中 $x_0,x_1$ 分别对应 $x_{min}, x_{max}$ ，可以看出当光线方向在 $x$ 维度为正(即与平面法向量符号相同)时，$x_{min}$ 平面的交点为入点，$x_{max}$ 平面的交点为出点。按此规则分别求出三个 slabs 的入点和出点，然后求入点中的最大值 ，出点中的最小值：
+
+​						$t_{min}=max\{t_{near}\}, t_{max}=min\{t_{far}\}$
+
+如果 $t_{min}<t_{max}$ 则表示光线穿过了 Bounding Box，否则表示无交点。
