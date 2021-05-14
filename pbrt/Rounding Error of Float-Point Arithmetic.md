@@ -62,7 +62,7 @@ $$2\otimes x,x\otimes 2$$ 是没有误差的，更一般地，任何乘法或除
 
 将浮点运算结果看作经过扰动的实数运算结果：$\tilde{a}=a\pm \delta_a=a(1\pm \delta_r)$。以运算 $r=(((a+b)+c)+d)$ 为例，
 
-$$\begin{align*} (((a\oplus b)\oplus c)\oplus d)\subset ((((a+b)(1\pm \epsilon_m)+c)(1+\epsilon_m)+d)(1\pm \epsilon_m)) \\ =(a+b)(1\pm \epsilon_m)^3+c(1\pm \epsilon_m)^2+d(1\pm \epsilon_m)  \\ \subset (a+b)(1\pm 4\epsilon_m)+c(1\pm 3\epsilon_m)+d(1\pm 2\epsilon_m) \\ = a+b+c+d+[\pm 4\epsilon_m (a+b)\pm 3\epsilon_m c \pm 2\epsilon_m d] \end{align*}$$
+$$\begin{align} (((a\oplus b)\oplus c)\oplus d) &\subset ((((a+b)(1\pm \epsilon_m)+c)(1+\epsilon_m)+d)(1\pm \epsilon_m)) \\ &=(a+b)(1\pm \epsilon_m)^3+c(1\pm \epsilon_m)^2+d(1\pm \epsilon_m)  \\ &\subset (a+b)(1\pm 4\epsilon_m)+c(1\pm 3\epsilon_m)+d(1\pm 2\epsilon_m) \\ &= a+b+c+d+[\pm 4\epsilon_m (a+b)\pm 3\epsilon_m c \pm 2\epsilon_m d] \end{align}$$
 
 > 因为 $\epsilon_m$ 非常小，因此  $\epsilon_m$ 的次幂可以放大为加法，有以下不等式
 >
@@ -86,9 +86,9 @@ $$a(1\pm \gamma_i)\otimes b(1\pm \gamma_j) \subset ab(1\pm r_{i+j+1})$$
 
 这个结果得到的相对误差 $|\frac{ab\gamma_{i+j+1}}{ab}|=\gamma_{i+j+1}$，最终错误大概为 $(i+j+1)/2$ 个 ulps(相对于乘积结果)，结果如我们对乘法结果期望(次幂)，较为紧凑。
 
-但对于加/减法运算，相对误差可能会增大很多，对于 $a(1\pm \gamma_i)\oplus b(1\pm \gamma_j)$，如果 $a,b$ 符号相同(减法时符号相反)，决定误差可被bound 为 $|a+b|\gamma_{i+j+1}$，相对误差大概为计算结果的 $(i+j+1)/2$ 个 ulps。
+但对于加/减法运算，相对误差可能会增大很多，对于 $a(1\pm \gamma_i)\oplus b(1\pm \gamma_j)$，如果 $a,b$ 符号相同(减法时符号相反)，决定误差可被bound 为 $|a+b|\gamma_{i+j+1}$，相对误差大概为计算结果的 $(i+j+1)/2$ 个 ulps。但当 $a,b$ 符号相反(减法时符号相同)时，相对误差会非常高。考虑 $a \approx -b$，相对误差 $\frac{|a|\gamma_{i+1}+|b|\gamma_{j+1}}{a+b}\approx \frac{2|a|\gamma_{i+j+1}}{a+b}$ 。
 
-但当 $a,b$ 符号相反(减法时符号相同)时，相对误差会非常高。考虑 $a \approx -b$，相对误差 $\frac{|a|\gamma_{i+1}+|b|\gamma_{j+1}}{a+b}\approx \frac{2|a|\gamma_{i+j+1}}{a+b}$ 
+> 相对误差非常大，即 $\gamma$ 非常大，这种现象称为 **catastrophic cancellation**。
 
 #### 4. Running Error Analysis
 
@@ -130,3 +130,108 @@ $$a(1\pm \gamma_i)\otimes b(1\pm \gamma_j) \subset ab(1\pm r_{i+j+1})$$
 
 #### 3. Bounding  Intersection Point Error
 
+计算得到的光线与各种几何的交点同样带有误差，这里我们使用保守的 error bounding box 将无误差交点包括其中，如下图所示
+
+<img src="Rounding Error of Float-Point Arithmetic.assets/image-20210513155700095.png" alt="image-20210513155700095" style="zoom: 50%;" />
+
+<center>图 1：交点的 error bounding box</center>
+
+上图中虚线围成的矩形为 error bounding box，黑色实体点为浮点计算得到的交点，曲线表示与光线求交的面，曲线上空心点表示无误差交点。交点的绝对误差在 $x,y$ 分别被 $\delta_x,\delta_y$ 所 bound。由于这些 bounds 是保守的，因此曲线上真正的交点一定位于 error bounding box 之内。
+
+接下来，我们对交点的浮点数计算的误差进行分析。假设我们已经求得参数化交点 $t_{hit}$ ，且该参数携带绝对误差 $\delta_t$。根据光线方程有交点 $P=O+t_{hit}\mathbf{d}$。这里我们以交点的 $x$ 坐标为例，
+
+​										$\begin{align} x&=O_x\oplus (t_{hit}\pm \delta_t)\otimes \mathbf{d}_x \\ &\subset O_x\oplus (t_{hit}\pm \delta_t)\mathbf{d}_x(1\pm \gamma_1) \\ &\subset O_x(1\pm \gamma_1)+(t_{hit}\pm \delta_t)\mathbf{d}_x(1\pm \gamma_2) \\ &= O_x+t_{hit}\mathbf{d}_x+[\pm O_x\gamma_1 \pm \delta_t\mathbf{d}_x\pm t_{hit}\mathbf{d}_x \gamma_2 \pm\delta_t\mathbf{d}_x\gamma_2] \end{align}$
+
+上述运算的绝对误差为：$\gamma_1|O_x|+\delta_t(1\pm \gamma_2)|\mathbf{d}_x|+\gamma_2|t_{hit}\mathbf{d}_x|$。
+
+上式中，贡献误差的各项($O_x,\mathbf{d}_x$ 和 $t_{hit}\mathbf{d}_x$)对于不同的交点有不同的数量级。因此交点计算过程有 catastrophic cancellation的风险。并且在计算交点的参数化数值 $t$ 时，会涉及很多浮点运算，同样假设 n 次浮点运算，$t$ 的绝对误差 $\delta_t$ 的数量级至少为 $\gamma_n t$。这些因素可能会导致所求交点具有相当大的误差。接下来将说明几种减小交点携带的误差的方法。
+
+##### Re-Intersection
+
+我们希望计算交点只带有少量 ulps 大小的误差，而不是使用参数化的光线方程计算导致的数以百计的 ulps 大小的误差。使用 Re-Intersection 来得到一个更小误差的交点，以第一次(即上述方法)所求交点作为起点，发出第二光线，求第二光线与平面的交点，即第二交点(重复交点)。由于第二交点与第二光线的起点非常接近，因此 $t_{hit2}$ 接近 $0$，因此 $t_{hit2}$ 的绝对误差的数量级会非常小，因此第二交点会更接近平面。此外，由于第二光线的起点与交点数量级相近，绝对误差中 $\gamma_1|O_x|$ 项不会引入较大的额外误差。
+
+做一次 Re-Intersection 需要的计算开销较大，而且计算得到的 $t_{hit2}$ 仍会带有误差。另一个高效的方法是通过将交点投影回表面，这些将交点投影到表面的误差非常小。注意，这里的误差没有将切线方向的误差考虑在内，而只是考虑那些可能使得交点落在表面下方的误差。下面以光线与球面的交点为例，假设已经求得交点 $P$，通过以球半径来缩放该交点坐标将该点投影回球面，得到新点 $P'=(x',y',z')$。
+
+​									$$x'=x\frac{r}{\sqrt{x^2+y^2+z^2}}$$
+
+对应的浮点运算为，
+
+ 								$\begin{align} x' &=x\otimes r \oslash sqrt((x\otimes x)\oplus (y\otimes y)\oplus(z\otimes z)) \\ &\subset \frac{xr(1\pm \epsilon_m)^2}{\sqrt{x^2(1\pm \epsilon_m)^3+y^2(1\pm \epsilon_m)^3+z^2(1\pm \epsilon_m)^2}(1\pm \epsilon_m)} \\ &\subset \frac{xr(1\pm \gamma_2)}{\sqrt{x^2(1\pm \gamma_3)+y^2(1\pm \gamma_3)+z^2(1\pm \gamma_2)}(1\pm \gamma_1)} \\&\subset \frac{xr(1\pm \gamma_2)}{\sqrt{(x^2+y^2+z^2)(1\pm  \gamma_4)}(1\pm \gamma_1)} \\ &= \frac{xr(1\pm \gamma_2)}{\sqrt{(x^2+y^2+z^2)}\sqrt{(1\pm \gamma_4)}(1\pm \gamma_1)} \\ &\subset \frac{xr}{\sqrt{(x^2+y^2+z^2)}}(1\pm \gamma_5) \\ &= x'(1\pm \gamma_5) \end{align}$
+
+因此，投影点的 $x$ 坐标的绝对误差由 $\gamma_5|x'|$ 界定，每个维度不会超过 2.5 个ulps的误差
+
+##### 参数化计算
+
+另一个高效计算低误差交点的方法是使用几何的参数化表示来计算较为精度的交点。例如：光线与三角形求交中，三个 edge functions 的值为 $e_0,e_1,e_2$，如果 $e_0,e_1,e_2$ 的符号相同，表示有交点。并且这三个 edge functions 的值可用来计算重心坐标 (barycentric coordinates) 
+
+​								$$b_i=\frac{e_i}{e_0+e_1+e_2}$$
+
+三角形顶点的属性(包括顶点坐标)可以沿着三角面进行插值：$v'=b_0v_0+b_1v_1+b_2v_2$。
+
+分析以这种方式得到交点的坐标所引入的误差。首先计算 $d=\frac{1}{e_0+e_1+e_2}$，对应浮点数运算为
+
+​								$$\begin{align} d&=1\oslash (e_0\oplus e_1\oplus e_2) \\ &\subset \frac{1}{(e_0+e_1)(1\pm \epsilon_m)^2+e_2(1\pm \epsilon_m)}(1\pm \epsilon_m) \\ &\subset \frac{1}{(e_0+e_1+e_2)(1\pm \epsilon_m)^2}(1\pm \epsilon_m) \\ &\subset \frac{1}{e_0+e_1+e_2}(1\pm \gamma_3) \end{align}$$
+
+下面只考虑 $x$ 坐标的插值有，
+
+​								$$\begin{align} x'&=((e_0\otimes x_0)\oplus (e_1\otimes x_1)\oplus (e_2\otimes x_2))\otimes d \\ &\subset (e_0x_0(1\pm \epsilon_m)^3+e_1x_1(1\pm \epsilon_m)^3+e_2x_2(1\pm \epsilon_m)^2)d(1\pm \epsilon_m) \\ &\subset (e_0x_0(1\pm \gamma_4)+e_1x_1(1\pm \gamma_4)+e_2x_2(1\pm \gamma_3))d \\ &\subset \frac{e_0x_0(1\pm \gamma_7)+e_1x_1(1\pm \gamma_7)+e_2x_2(1\pm \gamma_6)}{e_0+e_1+e_2} \\ &= b_0x_0(1\pm \gamma_7)+b_1x_1(1\pm \gamma_7)+b_2x_2(1\pm \gamma_6) \\&= (b_0x_0+b_1x_1+b_2x_2)+(\pm b_0\gamma_7\pm b_1\gamma_7\pm b_2\gamma_6) \end{align}$$
+
+因此这种插值方式的绝对误差可被界定为 $\gamma_7(|b_0x_0|+|b_1x_1|+|b_2x_2|)$。
+
+#### 4. Robust Spawned Ray Origins
+
+现在解决当交点位于表面下方，在生成新光线时而导致的重复求交问题。精确的交点一定位于如图1所示的 error bounding box 内部，如果得到 error bounding box ，可以将交点平移来保证其位于平面的上方，平移后的交点作为新光线的起点，从而保证不会重复求交该平面。为了能够使生成生成的光线起点定义在平面上方，需要沿着平面的法向量移出 error bounding box。假设平面方程为 $f(x,y,z)=\mathbf{n}_xx+\mathbf{n}_yy+\mathbf{n}_zz$
+
+> 这里的表面上下是关于新光线方向而言的，与新光线方向一致表示上，反之为下。
+
+对于那些不在平面上的点，$f(x,y,z)$ 的值表示的是沿着过该点的法线的偏移量。保守起见，一般取 error bounding box 的八个顶点的 $f(x,y,z)$ 的最大值作为偏移量，加上和减去这个偏移量可得到两个与 error bounding box 不相交的平面，如下图所示
+
+<img src="Rounding Error of Float-Point Arithmetic.assets/image-20210513204540981.png" alt="image-20210513204540981" style="zoom: 33%;" />
+
+上图中，黑色实心点是计算的交点，箭头表示表面法线方向，两个白色空心点分别为减去和加上偏移量得到的点。基于新光线的方向选择其中一个白色空心点作为新光线的起点，从而新光线不会穿过 error bounding box。
+
+如果 error bounding box 的八个顶点定义为 $(\pm\delta_x,\pm\delta_y,\pm\delta_z)$，$f(x,y,z)$ 的最大值为 $d=|\mathbf{n}_x|\delta_x+|\mathbf{n}_y|\delta_y+|\mathbf{n}_z|\delta_z$。
+
+> 若光线方向与平面法向量方向相反，则减去偏移量，相同则加上偏移量
+
+同样，我们需要处理计算偏移量引入的误差，保守起见，直接将偏移量提高一个 ulp。
+
+最后，如果光线经过变换的话，同样需要考虑变换带来的误差，保守起见，提高一个变换引入的 error bound。
+
+#### 5. Avoiding Intersections Behind Ray Origins
+
+另一误差是真实交点参数 $t$ 为负，即交点位于光线起点之后，但由于浮点运算误差导致 $t$ 为正，错误地得到了一个交点。
+
+一些求交算法总能返回正确的 $t$ 值符号。例如光线与 bounding box 求交：$t=(x\ominus O_x)\oslash \mathbf{d}_x$ 。IEEE 确保当 $a>b$ 时，$a\ominus b\geq0$，当 $a<b$ 时，$a\ominus b \leq 0$。其次浮点数除法返回正确的符号，这些保证了计算的 $t$ 值符号是正确的。($t=0$ 时不影响，因为求交测试会谨慎选择 $t>0$)。
+
+对于三角形的求交算法，使用 edge function 计算最终的 $t$ 值：$t=\frac{e_0z_0+e_1z_1+e_2z_2}{e_0+e_1+e_2}$，接下来界定 $t$ 值的误差，以保守方式检查 $t$ 值是否为正。
+
+首先计算将三角形变换到 ray coordinate 引入的误差。给定光线起点 $O$，方向 $\mathbf{d}$，一个顶点 $P$，变换后的 $z$ 坐标为 
+
+​									$z=(1\oslash \mathbf{d}_z)\otimes (P_z\ominus O_z) $。
+
+使用上述误差分析方法有，对于三角形顶点 $P_i$ 的坐标 $z_i$，绝对误差可被界定为 $\gamma_3|z_i|$。因此任意 $z$ 坐标的误差上限为 									$\delta_z=\gamma_3 \underset{i}{max}|z_i|$。
+
+下面给出变换后的 $x_i,y_i$ 携带的绝对误差，
+
+​									$\delta_x=\gamma_5(\underset{i}{max}|x_i|+\underset{i}{max}|z_i|)$
+
+​									$\delta_y=\gamma_5(\underset{i}{max}|y_i|+\underset{i}{max}|z_i|)$
+
+接下来是 edge function 的计算所引入的误差，
+
+​									$\begin{align}&e_0=(x_1\otimes y_2)\ominus(y_1\otimes x_2) \\ &e_1=(x_2\otimes y_0)\ominus(y_2 \otimes x_0) \\&e_2=(x_0\otimes y_1)\ominus (y_0\otimes x_1) \end{align}$
+
+edge function 被 bound 为 $(\underset{i}{max}|x_i|+\delta_x)(\underset{i}{max}|y_i|+\delta_y)(1\pm \epsilon_m)$，其绝对误差为
+
+​									$\delta_{xy}=\gamma_2\underset{i}{max}|x_i|\underset{i}{max}|y_i|+\delta_y\underset{i}{max}|x_i|+\delta_x\underset{i}{max}|y_i|+...$
+
+忽略掉 $\gamma,\delta$ 相乘的高阶项，edge function 的绝对误差可以被 bound 为 
+
+​									$\delta_e=2(\gamma_2\underset{i}{max}|x_i|\underset{i}{max}|y_i|+\delta_y\underset{i}{max}|x_i|+\delta_x\underset{i}{max}|y_i|)$
+
+最终 $t$ 的误差取所有 $e_i$ 的误差最大值
+
+​									$\delta_t=3(\gamma_3\underset{i}{max}|e_i|\underset{i}{max}|z_i|+\delta_e\underset{i}{max}|z_i|+\delta_z\underset{i}{max}|e_i|)$
+
+如果 $t\leq \delta_t$ ，保守返回无交点结果，这样就可以排除掉光线起点之后的交点
