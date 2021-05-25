@@ -45,7 +45,7 @@ Legendre 多项式是一种正交基，通常是复值函数，我们这里只�
 
 前 6 个基函数可以写为，
 
-$$P^0_0(x) \\ P^0_1(x),P^1_1(x) \\ P^0_2(x),P^1_2(x),P^2_2(x)$$<img src="D:\Study\Paper-reading\graphics\typora-notes\graphic basics\Spherical Harmonic Lighting.assets\image-20210419193538628.png" alt="image-20210419193538628" style="zoom: 50%;" />
+$$P^0_0(x) \\ P^0_1(x),P^1_1(x) \\ P^0_2(x),P^1_2(x),P^2_2(x)$$<img src="Spherical Harmonic Lighting.assets\image-20210419193538628.png" alt="image-20210419193538628" style="zoom: 50%;" />
 
 Legendre 多项式用于近似 1-D 函数，一般 $P^0_0(x)$ 预先定义好，使用下述递归规则进行推导高阶或同阶基函数
 
