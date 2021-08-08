@@ -17,7 +17,7 @@
 
 ### 1. VPLs Generation
 
-##### (1) 区分 Divergent 和 Regular 三角形
+#### 1.1 区分 Divergent 和 Regular 三角形
 
 设置阈值 $S_0$ ，面积大于 $S_0$ 的三角形为 Divergent 三角形，这类三角形需要经过一次 tessellation 特殊处理，之后描述。
 
@@ -25,9 +25,9 @@
 
 这个公式表达的是启发式地照亮一个像素，该像素至少周围有 $N_{avg}$ 个距离为 $D_{near}$ 的 VPLs 。参数配置：假设 $R_{scene}$ 为场景的半径长度，设置 $\large D_{near}=0.2\times R_{scene}$，$N_{avg}$ 在区间 $[64,1024]$ 内进行 quality-speed tradeoff。
 
-> `个人理解见`：附录 1. 阈值 $S_0$​ 的启发式的理解
+> `个人理解见`：[附录 1. 阈值 $S_0$ 的启发式的理解](#附录1)
 
-##### (2) 三角形提取过程
+#### 1.2 三角形提取过程
 
 提取过程目的是丢弃小三角形，因为这类三角形引入的 diffuse indirect lighting 对最终的渲染贡献很小，丢弃会加快速度，但如果全部无差别丢弃，则会丢失那些多个小三角形一起作用而带来的明显间接光照效果，因此提取操作中引入一种随机过程，即**随机提取过程**：
 
@@ -37,7 +37,7 @@
 
 其中 $\mathcal{L}$ 是全体 regular 三角形的集合，$\mathcal{L^*}$ 是保留的三角形集合。由此可以看出，**三角形面积越小，被丢弃的概率越大。**对于整个场景的面能够保留下来的数量的期望为 $\large \mathbb{E}(N_{sample})=\frac{\mathcal{A}_{scene}}{S_0}$。
 
-**基于随机提取过程的三角形多尺度划分**
+##### 基于随机提取过程的三角形多尺度划分
 
 将场景中三角形划分为 $(\mathcal{L}^0,...,\mathcal{L}^N)$ 共个 $N+1$ 子集，子集索引由 $0$ 到 $N$ 递增，影响距离递减（即尺度递减），子集包含的三角形数量递增。为了实现这样的划分，引入 $N+1$ 长度的递增序列 $\{S_0<...<S_N\}$。扩展随机提取过程到多尺度划分过程，三角形 $\large t_i$ 划分为子集 $\large \mathcal{L}^k$ 的概率为
 
@@ -55,7 +55,7 @@
 
 ### 2. VPLs 光照下的着色
 
-##### (1) many-light 下的 VPLs lighting 问题描述
+##### 2.1 many-light 下的 VPLs lighting 问题描述
 
 在 many-lights 框架中，对于 normal 为 $\large \vec{n_x}$ 的着色点 $x$ 的 indirect outgoing radiance，计算方法由连续积分近似为来自一个 VPLs 集合的 radiance 离散求和。
 
@@ -67,7 +67,7 @@ $\large \mathcal{L}$ 表示场景中所有三角形集合，$\large  H(t_i,x,\ve
 
 其中 $\large \bar{u}$ 表示 normalized 向量，$\large <\vec{u},\vec{v}>^+=max(0,<\vec{u},\vec{v}>)$，$\large L(t_i,\bar{y_ix})$ 是离开 VPL 中心 $\large y_i\in t_i$ 朝向 $\large \bar{y_ix}$ 的 radiance， $\large d_i=max(\epsilon,||\vec{xy_i}||)$ 是进行过 clamp 的 $\large y_i$ 与 $\large x$ 之间的距离，避免奇异点。
 
-> `对近似的个人理解见`：附录 2. 着色方程积分近似为求和的理解
+> `对近似的个人理解见`：[附录 2. 着色方程积分近似为求和的理解](#附录2)
 
 VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
@@ -79,7 +79,7 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 >
 > $$\large\begin{align}H(t_i,x,\vec{n_x})&=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}\\ &= \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{<\vec{n_x},\bar{xy_i}>(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2}\tag{3}\end{align} $$
 
-##### (2) 多尺度划分下的 VPLs lighting 的近似
+##### 2.2 多尺度划分下的 VPLs lighting 的近似
 
 上述进行的对三角形的多尺度随机划分引入了随机过程，因此 $\large L^{ML}(x,\vec{n_x})$  也变成了**随机量**，接下来就需要对该随机量进行估计。我们定义 $\large K(x,\vec{n_x})$ 为 $\large L^{ML}(x,\vec{n_x})$  **估计量(Estimator)**：
 
@@ -93,7 +93,7 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
 其中 $\large \mathbb{I}_{t_i\in \mathcal{L}^k}$ 为指示函数，当 $\large t_i\in \mathcal{L}^k$ 时值为 $1$，否则为 0。
 
-> `推导见`：附录 3. VPL lighting 推导
+> `推导见`：[附录 3. VPL lighting 推导](#附录3)
 
 我们要选取 $F^k(t_i,x)$ 使得 $K(x,\vec{n_x})$ 为 $L^{ML}(x,\vec{n_x})$ 的无偏估计，即 $\mathbb{E}\left[K(x,\vec{n_x})\right]=L^{ML}(x,\vec{n_x})$，比较式 (2) 和 (4) 可有
 
@@ -101,11 +101,9 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
 根据划分策略，将 $\large F^k$ 定义为 	$\large F^k(t_i,x)=S_kf^k(t_i,x)$
 
-> `推导见`：附录 4. 转为整体划分问题推导
+> `推导见`：[附录 4. 转为整体划分问题推导](#附录4)
 
 这样就将一个无偏估计问题转为了寻找对一个整体的划分问题。
-
-
 
 **整体的划分选取**
 
@@ -121,7 +119,7 @@ $\large f^k(t_i,x)$ 划分函数的参数 $\large t_i,x$ 都为三维，论文�
 
 其中  $\large D(h)=\frac{1}{\pi}\sqrt{\frac{3\rho_x\rho_iE(t_i)}{2h}}$
 
-> `推导见`：附录 5. 整体划分选取推导
+> `推导见`：[附录 5. 整体划分选取推导](#附录5)
 
  $\large D(h)=\frac{1}{\pi}\sqrt{\frac{3\rho_x\rho_iE(t_i)}{2h}}$ 与 $\large x$ 着色点无关，因此 $\large \mathcal{B}_h(t_i)$ 是一个 nest ball，其边界上有点 $\large y_i$，其中心位于直线 $\large (y_i,\vec{n_i})$ 上。如下图所示
 
@@ -155,17 +153,17 @@ $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
 
 ​											$$\large\begin{cases}D_k=\sqrt{S_0\mu^k}\\ D_{N+1}=D_{N}\end{cases}$$
 
-> `个人理解见：附录 6. 模拟传统层级的几何级下降的理解`
+> 个人理解见：[附录 6. 模拟传统层级的几何级下降的理解](#附录6)
 
 ## 实现细节
 
-##### (1) Pipeline 描述
+##### 1. Pipeline 描述
 
 本论文提出的技术共用到三个 geometry pass，其中两个主要 pass 用于生成 GBuffer 和生成并 Splat VPLs。第三个 pass 用于处理 Divergent triangle。如下图所示
 
-![image-20210718161413495](Forward Light Cuts A Scalable Approach to Real-Time Global Illumination.assets/image-20210718161413495.png)
+<img src="Forward Light Cuts A Scalable Approach to Real-Time Global Illumination.assets/image-20210718161413495.png" alt="image-20210718161413495" style="zoom: 50%;" />
 
-##### (2) Divergent 三角形处理
+##### 2. Divergent 三角形处理
 
 在本论文提出的 indirect lighting pipeline 中包含了两个 geometry pass：第一个 pass 关闭 tessellation stage 处理整个场景的三角形，这个阶段检测出哪些是 Divergent 三角形，并存入单独的 buffer 中。剩下的 regualer 三角形送入 regular pipeline。
 
@@ -175,7 +173,7 @@ $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
 
 regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting 计算。
 
-##### (3) Per-triangle random number generation
+##### 3. Per-triangle random number generation
 
 本论文涉及的随机过程都需要随机数来完成，对于算法 1 用到的随机数 $\large u_{t_i}$，作者使用伪随机数。mesh 中每个顶点添加一个额外的 uint32 属性，v_rand。该属性在加载 mesh 时为每个顶点生成一个 uniform 随机数。在 regular pipeline 中，每个三角形的随机数 $\large u_{t_i}$ 是使用其三个顶点间的 $\large xor$ 操作得到的。
 
@@ -185,7 +183,7 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 <img src="Forward Light Cuts A Scalable Approach to Real-Time Global Illumination.assets/image-20210718164046205.png" alt="image-20210718164046205" style="zoom:67%;" />
 
-##### (4) Progressive rendering
+##### 4. Progressive rendering
 
 可以按照上述使用 u_rand 的方法生成多个 independent rendering，之后累积作平均用以产生更好的渲染结果。如，从 u_rand 中为每个三角形生成两个独立的随机数，用以扰动 VPL 中心点 $\large y_i$。平均由多个 jittered VPLs 生成的多个 independent rendering，可以提供接近公式 (4) 真实解的结果。
 
@@ -198,11 +196,11 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 ## 附录
 
-### 1. 阈值 $S_0$ 的启发式的理解
+### 1. 阈值 $S_0$​ 的启发式的理解<a name="附录1"></a>
 
 以像素为球心、半径为 $D_{near}$ 的球面面积为 $4\pi D^2_{near}$，假设在距离 $D_{near}$ 内的 VPL 光源才能到达该像素，并且 $N_{avg}$ 个 VPL 共同作用下才能照亮该像素。由于本文中次级光源都假设为 diffuse，因此可粗略地认为 VPL 发出的 radiance 与面积成正比。这样下来，VPL 的平均面积 $\large 4\pi \frac{D^2_{near}}{N_{avg}}$，高于此平均面积的三角形成为 divergent，剩下的三角形为  regular，regular 三角形生成的 VPL 具有可控的影响距离，divergent 三角形后续会进一步细分为小三角形。
 
-### 2. 着色方程积分近似为求和的理解
+### 2. 着色方程积分近似为求和的理解<a name="附录2"></a>
 
 首先来看精确的 rendering equation，
 
@@ -214,7 +212,7 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 $L^{ML}$ 的形式即从对光源面积的积分近似而来，diffuse 下 BRDF 是常量，即 $H$ 中的 $\large\frac{\rho_x}{\pi}$，$L_i$ 对应 $H$ 中的 $L$。因此，$L^{ML}(x,\vec{n_x})$ 与 $L(x,\omega_o)$ 唯一不同的是一个是对总体面积的连续积分，一个是将每个 VPL 的面积视为微元的离散求和。可知，在 VPL 面积较小时，这种近似较为接近正确。
 
-### 3. VPL lighting 推导
+### 3. VPL lighting 推导<a name="附录3"></a>
 
 将划分的三角形所有子集看作一个整体求和符号有：$\large \sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}=\sum\limits_{t_i\in \mathcal{L}}$
 
@@ -246,7 +244,7 @@ $\large\mathbb{E}\left[F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right]=F^k(t_
 
 $\large \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)$
 
-### 4. 转为整体划分问题推导
+### 4. 转为整体划分问题推导<a name="附录4"></a>
 
 由 (1) 式代入 (4) 中有
 
@@ -258,7 +256,7 @@ $$\large\forall x,\quad \sum\limits_k \frac{F^k(t_i,x)}{S_k}=1$$
 
 ​				$\large \sum\limits_kf^k(t_i,x)=1$
 
-### 5. 整体划分选取推导
+### 5. 整体划分选取推导<a name="附录5"></a>
 
 > 当 receiver 正对着 emitter 时，将 $\large \vec{n_x}=\bar{xy_i}$ 代入 (3)，有
 
@@ -274,6 +272,7 @@ $$\large \frac{<\vec{n_i},\bar{y_ix}>}{||x-y_i||} \geq \pi \sqrt{\frac{2h}{3\rho
 
 $$\large \frac{||x-y_i||}{<\vec{n_i},\bar{y_ix}>} \leq \frac{1}{\pi} \sqrt{\frac{3\rho_i\rho_xE(t_i)}{2h}}$$
 
-### 6. 模拟传统层级的几何级下降的理解
+### 6. 模拟传统层级的几何级下降的理解<a name="附录6"></a>
 
 这里的模拟层级表示而引入几何级下降的参数配置：例如满二叉树的层级表示，根节点层(0层)节点数量为 $\large S_0=1$ 个，往下每层数量是前一层的 2 倍，即有 $\large S_k=S_0 2^k$ 个，为几何级增长。
+
