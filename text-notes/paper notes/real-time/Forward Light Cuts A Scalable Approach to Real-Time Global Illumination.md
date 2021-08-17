@@ -2,7 +2,7 @@
 
 `Forward Light Cuts: A Scalable Approach to Real-Time Global Illumination  `  
 
-这篇论文假设了次级光源为 diffuse 材质的场景，提出了一种能够很好结合 tesellation 和 geometry 阶段的并行特性的高效实时全局光照近似计算算法。该算法基于 many-light 框架，首先通过将场景中三角形以一种概率分布划分为 multi-scale radiance 子集，每个子集中的每个三角形生成一个扰动的 VPL，这样就组成了多尺度的 VPL 集合。之后求解该 VPL 集合形成的 many-light 问题来近似全局光照。该算法既模拟了传统层级的光源数量的随尺度增加的几何级下降，又具有可高度并行的线性设计，在场景完全动态并且涉及大量物体时，相比于之前算法，画面无明显缺陷并且具有较大的性能提升。
+这篇论文假设了次级光源为 diffuse 材质的场景，提出了一种能够很好结合 tessellation 和 geometry 阶段的并行特性的高效实时全局光照近似计算算法。该算法基于 many-light 框架，首先通过将场景中三角形以一种概率分布划分为 multi-scale radiance 子集，每个子集中的每个三角形生成一个扰动的 VPL，这样就组成了多尺度的 VPL 集合。之后求解该 VPL 集合形成的 many-light 问题来近似全局光照。该算法既模拟了传统层级的光源数量的随尺度增加的几何级下降，又具有可高度并行的线性设计，在场景完全动态并且涉及大量物体时，相比于之前算法，画面无明显缺陷并且具有较大的性能提升。
 
 ## Motivation
 
@@ -13,7 +13,7 @@
 - 层级缓存结构每一帧都要重复计算，这个缺点带来的开销在现代图形学的并行结构下更为明显
 - 对于实时渲染，初始 VPL 集合过大，带来的开销难以分摊
 
-## Algorithm
+## Approach
 
 ### 1. VPLs Generation
 
@@ -41,8 +41,9 @@
 
 将场景中三角形划分为 $(\mathcal{L}^0,...,\mathcal{L}^N)$ 共个 $N+1$ 子集，子集索引由 $0$ 到 $N$ 递增，影响距离递减（即尺度递减），子集包含的三角形数量递增。为了实现这样的划分，引入 $N+1$ 长度的递增序列 $\{S_0<...<S_N\}$。扩展随机提取过程到多尺度划分过程，三角形 $\large t_i$ 划分为子集 $\large \mathcal{L}^k$ 的概率为
 
-​								$$\large \forall k\in [0...N],\quad P(t_i\in \mathcal{L}^k)=\frac{\mathcal{A}(t_i)}{S_k}\tag{1}$$
-
+$$
+\large \forall k\in [0...N],\quad P(t_i\in \mathcal{L}^k)=\frac{\mathcal{A}(t_i)}{S_k} \tag{1}\label{partition probability}
+$$
 在多尺度划分过程中，divergent 三角形的定义更改为**面积大于 $S_N$ 的三角形**。
 
 实际划分算法又有进一步的改动，引入 $\large\forall k\in [0...N],\quad \tilde{S}_k=\frac{1}{\sum^k_{j=0}}$ ， 算法伪代码如下
@@ -77,7 +78,9 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
 >  将 $\large L(t_i,\bar{y_ix})$ 代入 $\large H(t_i,x,\vec{n_x})$ 中有
 >
-> $$\large\begin{align}H(t_i,x,\vec{n_x})&=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}\\ &= \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{<\vec{n_x},\bar{xy_i}>(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2}\tag{3}\end{align} $$
+>  $$
+>  \large \begin{align}H(t_i,x,\vec{n_x})&=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}\\ &= \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{<\vec{n_x},\bar{xy_i}>(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2} \end{align}\tag{2} \label{received radiance}
+>  $$
 
 ##### 2.2 多尺度划分下的 VPLs lighting 的近似
 
@@ -89,16 +92,18 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
 下面就要确定 $\large F^k(t_i,k)$ 的形式：
 
-​										$$\large \begin{align} \mathbb{E}\left[K(x,\vec{n_x})\right] &= \mathbb{E}\left[\sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}H(t_i^k,x,\vec{n_x})F^k(t_i^k,x)\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x}) \mathbb{E}\left[\sum\limits^N_{k=0}F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)\tag{4}\end{align}$$
-
+$$
+\large\begin{align} \mathbb{E}\left[K(x,\vec{n_x})\right]&= \mathbb{E}\left[\sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}H(t_i^k,x,\vec{n_x})F^k(t_i^k,x)\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x}) \mathbb{E}\left[\sum\limits^N_{k=0}F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)\end{align}\tag{3}\label{many light estimator}
+$$
 其中 $\large \mathbb{I}_{t_i\in \mathcal{L}^k}$ 为指示函数，当 $\large t_i\in \mathcal{L}^k$ 时值为 $1$，否则为 0。
 
 > `推导见`：[附录 3. VPL lighting 推导](#附录3)
 
 我们要选取 $F^k(t_i,x)$ 使得 $K(x,\vec{n_x})$ 为 $L^{ML}(x,\vec{n_x})$ 的无偏估计，即 $\mathbb{E}\left[K(x,\vec{n_x})\right]=L^{ML}(x,\vec{n_x})$，比较式 (2) 和 (4) 可有
 
-​											$\large \forall x,\quad \sum\limits_k F^k(t_i,x)P(t_i\in \mathcal{L}^k)=\mathcal{A}(t_i)\tag{5}$
-
+$$
+\large \forall x,\quad \sum\limits_k F^k(t_i,x)P(t_i\in \mathcal{L}^k)=\mathcal{A}(t_i)\label{partition derivate}
+$$
 根据划分策略，将 $\large F^k$ 定义为 	$\large F^k(t_i,x)=S_kf^k(t_i,x)$
 
 > `推导见`：[附录 4. 转为整体划分问题推导](#附录4)
@@ -109,14 +114,17 @@ VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
 $\large f^k(t_i,x)$ 划分函数的参数 $\large t_i,x$ 都为三维，论文采用一种方法将划分函数进行降维近似处理，此方法参考了论文  *Point-based approximate color bleeding* 中的 nested balls: $\large \mathcal{B}_h(t_i)$，其定义如下：
 
-​								$$\large \forall h\in \mathbb{R}^*, \quad \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n})\geq h\} \tag{6}$$
+$$
+\large \forall h\in \mathbb{R}^*, \quad \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n})\geq h\} \tag{4} \label{partition nested ball}
+$$
 
 > $\large H$ 是 $\large x$ 接收到 $\large t_i$ VPL 的 radiance，这个 nested ball 的含义就是定义了一个对着色点 $\large x$ 的 radiance 贡献较为显著的区域，这个显著程度由 $\large h$ 决定。
 
 此外，考虑 receiver 正对着 emitter 的情况，即 $\large \vec{n_x}=\bar{xy_i}$，此时 $\large H$ 达到最大值，有：
 
-​								$$\large \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}\leq D(h)\}\tag{7}$$，
-
+$$
+\large \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}\leq D(h)\} \tag{5} \label{nested ball}
+$$
 其中  $\large D(h)=\frac{1}{\pi}\sqrt{\frac{3\rho_x\rho_iE(t_i)}{2h}}$
 
 > `推导见`：[附录 5. 整体划分选取推导](#附录5)
@@ -137,11 +145,10 @@ $\large f^k(t_i,x)$ 划分函数的参数 $\large t_i,x$ 都为三维，论文�
 
  $\large f^k$ 将会在 rendering 中用作 splat function，因此尽可能使得 $f^k$ 易于计算且 smooth，论文定义为下面一组分段线性函数
 
-​										$$\large \forall d\in\mathbb{R},\quad \tilde{f}^k(d)=\begin{cases}\begin{align}&1 &k=0\space and \space d\in[0,D_1] \\ &\frac{d-D_{k-1}}{D_k-D_{k-1}} &k>0\space and \space d\in[D_{k-1},D_k] \\ &\frac{D_{k+1}-d}{D_{k+1}-D_k} &k>0 \space and \space d\in [D_k,D_{k+1}]\\&0 &otherwise\end{align}\end{cases}$$
-
+$$
+\large \forall d\in\mathbb{R},\quad \tilde{f}^k(d)=\begin{cases}\begin{align}&1 &k=0\space and \space d\in[0,D_1] \\ &\frac{d-D_{k-1}}{D_k-D_{k-1}} &k>0\space and \space d\in[D_{k-1},D_k] \\ &\frac{D_{k+1}-d}{D_{k+1}-D_k} &k>0 \space and \space d\in [D_k,D_{k+1}]\\&0 &otherwise\end{align}\end{cases}
+$$
 $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
-
-
 
  **参数配置**
 
@@ -165,7 +172,7 @@ $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
 
 ##### 2. Divergent 三角形处理
 
-在本论文提出的 indirect lighting pipeline 中包含了两个 geometry pass：第一个 pass 关闭 tessellation stage 处理整个场景的三角形，这个阶段检测出哪些是 Divergent 三角形，并存入单独的 buffer 中。剩下的 regualer 三角形送入 regular pipeline。
+在本论文提出的 indirect lighting pipeline 中包含了两个 geometry pass：第一个 pass 关闭 tessellation stage 处理整个场景的三角形，这个阶段检测出哪些是 Divergent 三角形，并存入单独的 buffer 中。剩下的 regular 三角形送入 regular pipeline。
 
 存储 Divergent 三角形的 buffer 直接作为后续第二个 geometry pass 的输入。tessellation stage 只在这个 pass 开启，用于细分 divergent 三角形，使得它们的面积小到能够被 regular pipeline 处理。
 
@@ -196,11 +203,11 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 ## 附录
 
-### 1. 阈值 $S_0$​ 的启发式的理解<a name="附录1"></a>
+### 1. <a name="附录1">阈值 $S_0$ 的启发式的理解</a>
 
 以像素为球心、半径为 $D_{near}$ 的球面面积为 $4\pi D^2_{near}$，假设在距离 $D_{near}$ 内的 VPL 光源才能到达该像素，并且 $N_{avg}$ 个 VPL 共同作用下才能照亮该像素。由于本文中次级光源都假设为 diffuse，因此可粗略地认为 VPL 发出的 radiance 与面积成正比。这样下来，VPL 的平均面积 $\large 4\pi \frac{D^2_{near}}{N_{avg}}$，高于此平均面积的三角形成为 divergent，剩下的三角形为  regular，regular 三角形生成的 VPL 具有可控的影响距离，divergent 三角形后续会进一步细分为小三角形。
 
-### 2. 着色方程积分近似为求和的理解<a name="附录2"></a>
+### 2. <a name="附录2">着色方程积分近似为求和的理解</a>
 
 首先来看精确的 rendering equation，
 
@@ -212,7 +219,7 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 $L^{ML}$ 的形式即从对光源面积的积分近似而来，diffuse 下 BRDF 是常量，即 $H$ 中的 $\large\frac{\rho_x}{\pi}$，$L_i$ 对应 $H$ 中的 $L$。因此，$L^{ML}(x,\vec{n_x})$ 与 $L(x,\omega_o)$ 唯一不同的是一个是对总体面积的连续积分，一个是将每个 VPL 的面积视为微元的离散求和。可知，在 VPL 面积较小时，这种近似较为接近正确。
 
-### 3. VPL lighting 推导<a name="附录3"></a>
+### 3. <a name="附录3">VPL lighting 推导</a>
 
 将划分的三角形所有子集看作一个整体求和符号有：$\large \sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}=\sum\limits_{t_i\in \mathcal{L}}$
 
@@ -244,9 +251,9 @@ $\large\mathbb{E}\left[F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right]=F^k(t_
 
 $\large \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)$
 
-### 4. 转为整体划分问题推导<a name="附录4"></a>
+### 4. <a name="附录4">转为整体划分问题推导</a>
 
-由 (1) 式代入 (4) 中有
+由 $\eqref{partition probability}$ 式代入 $\eqref{many light estimator}$ 中有
 
 $$\large\forall x,\quad \sum\limits_k F^k(t_i,x)\frac{\mathcal{A}(t_i)}{S_k}=\mathcal{A}(t_i)$$
 
@@ -256,13 +263,13 @@ $$\large\forall x,\quad \sum\limits_k \frac{F^k(t_i,x)}{S_k}=1$$
 
 ​				$\large \sum\limits_kf^k(t_i,x)=1$
 
-### 5. 整体划分选取推导<a name="附录5"></a>
+### 5. <a name="附录5">整体划分选取推导</a>
 
-> 当 receiver 正对着 emitter 时，将 $\large \vec{n_x}=\bar{xy_i}$ 代入 (3)，有
+> 当 receiver 正对着 emitter 时，将 $\large \vec{n_x}=\bar{xy_i}$ 代入 $\eqref{received radiance}$，有
 
-$\begin{align}\large \underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n_x})&=\frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2}\\&=\frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\left(\frac{<\vec{n_i},\bar{y_ix}>}{||x-y_i||}\right)^2\end{align}$
+$\large\begin{align}\underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n_x})&=\frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2}\\&=\frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\left(\frac{<\vec{n_i},\bar{y_ix}>}{||x-y_i||}\right)^2\end{align}$​
 
-> 将 $\large H$ 代入公式 (6) 有
+> 将 $\large H$ 代入公式 $\eqref{partition nested ball}$ 有
 
 $$\large \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\left(\frac{<\vec{n_i},\bar{y_ix}>}{||x-y_i||}\right)^2 \geq h$$
 
@@ -272,7 +279,7 @@ $$\large \frac{<\vec{n_i},\bar{y_ix}>}{||x-y_i||} \geq \pi \sqrt{\frac{2h}{3\rho
 
 $$\large \frac{||x-y_i||}{<\vec{n_i},\bar{y_ix}>} \leq \frac{1}{\pi} \sqrt{\frac{3\rho_i\rho_xE(t_i)}{2h}}$$
 
-### 6. 模拟传统层级的几何级下降的理解<a name="附录6"></a>
+### 6. <a name="附录6">模拟传统层级的几何级下降的理解</a>
 
 这里的模拟层级表示而引入几何级下降的参数配置：例如满二叉树的层级表示，根节点层(0层)节点数量为 $\large S_0=1$ 个，往下每层数量是前一层的 2 倍，即有 $\large S_k=S_0 2^k$ 个，为几何级增长。
 
