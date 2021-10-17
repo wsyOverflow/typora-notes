@@ -105,7 +105,7 @@ $$light(\theta,\phi)=max(0,5cos\theta-4)+max(0,-4sin(\theta-\pi)*cos(\phi-2.5)-3
 
 $$c_i=\int^{2\pi}_0\int^\pi_0light(\theta,\phi)y_i(\theta,\phi)sin\theta d\theta d\phi$$
 
-> 此处积分只是投影公式 (1) 的球坐标形式，其中 $dS=sin\theta d\theta d\phi$，$dS$ 为球面上小矩形的面积，可知越接近极点的小矩形面积越小，越接近赤道的小矩形面积越大。具体推导参考 [微分立体角对应的微分面积](file:./Basic Radiometry.md)。
+> 此处积分只是投影公式 (1) 的球坐标形式，其中 $dS=sin\theta d\theta d\phi$，$dS$ 为球面上小矩形的面积，可知越接近极点的小矩形面积越小，越接近赤道的小矩形面积越大。具体推导参考 [微分立体角对应的微分面积](Basic Radiometry.md)。
 
 计算此积分，使用蒙特卡洛采样方法进行估计，此时使用简单的均匀分布的概率密度，由在球面上的积分得 $p=1/4\pi$。
 
