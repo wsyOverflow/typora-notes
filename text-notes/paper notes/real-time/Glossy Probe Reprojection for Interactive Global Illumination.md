@@ -50,24 +50,29 @@ Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 p
 
 Adaptive resolution map 的元素计算：
 
-​										$$\large m=m_{mat}(m_{size}+m_{complexity})$$
-
+$$
+\large m=m_{mat}(m_{size}+m_{complexity})
+$$
 可以看出 
 
 - $\large m_{mat}$​ 满足了 a)，越光滑 $\large m_{mat}$​ 越大，得到的分辨率参数 $m$​ 也越大；
 
 - $\large m_{size}$​​​​ 考虑了 b) 中距离与角度的要求，其计算为 
-                                  $$\large m_{size}=\frac{m^2_{depth}}{m_{face}}cos(\theta_{long})$$​
+                              $$
+                              \large m_{size}=\frac{m^2_{depth}}{m_{face}}cos(\theta_{long})
+  $$
 
   >  depth 越大，表面面积相对越小，对应较大的 $m$​；$\large m_{face}$​​ 越小，表示入射光与 normal 夹角越大，越 grazing，对应较大的 $m$
 
-  - [ ] 不明白：This term converts probe area to actual object size, compensating for perspective and angular foreshortening akin to a form factor. $\large \theta_{long}$​​ is the longitude angle, which compensates for size variations induced by the lat-long base parameterization.  
-
+                              - [ ] 不明白：This term converts probe area to actual object size, compensating for perspective and angular foreshortening akin to a form factor. $\large \theta_{long}$​​ is the longitude angle, which compensates for size variations induced by the lat-long base parameterization.  
+                              
 - 要求 c) 需要对局部几何复杂度分析，作者使用频率分析代替：
-         $$\large m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1$$​​​​
+     $$
+     \large m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1
+     $$
 
      - [ ] 2D Discrete consine transform [[2]](#[2]): $\mathbf{b}$​ 是 basis function，basis function 与 法线的卷积用来分析 local neighborhood 的频率信息
-
+     
      $\large w_{p,q} =||[p,q]||^k$ 权重用来确保高频对几何复杂度贡献更高，论文中取 $N=16,k=5$。
 
 $\large m_{size}$ 和 $\large m_{complexity}$ 使用均值经过归一化。
@@ -158,27 +163,33 @@ glossy 光线路径的全局光照渲染概要：
 **评估 probe sample 的优劣**：接下来使用 [Fig 2(b)](#Fig 2) 中的符号，probe view 下的 reflector position $r_p$、normal $n_p$ 和 reflected position $R_p$；novel view 下对应的 $r_v$、$n_v$ 和 $R_v$​ 。设计 energy function 来评估 probe sample 优劣的四个标准：
 
 - novel view sample($R_v$) 和 probe view samples($R_p$) 更倾向于位于同一表面。如果二者的材质 ID 不同，则惩罚总 energy，即乘上 $\large s_a=10$. 因此只有在其他样本不可用时，才会选用材质不匹配的样本。
+
 - $\large R_v$ 与 $\large R_p$ 距离近更好，对此引入 $\large s_b=||R_v-R_p||$.
+
 - 相近的表面法线 $n_v$​ 和 $n_p$​ 可以确保一致的光照。对此引入 $\large s_c=1-(n_v\cdot n_p)$​
+
 - 样本应该具有相近的 reflected ray，对此引入：
-                           $$\Large s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}$$​​
+                       $$
+                       s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}​
+                       $$
 
 结合以上标准，设计 energy function 为：
 
 $$
-\Large \varepsilon=s_a\cdot \big(min(s_b,1)+min(s_c,1)+min(s_d,1)\big) \tag{1} \label{energy function}
+\varepsilon=s_a\cdot \big(min(s_b,1)+min(s_c,1)+min(s_d,1)\big) \tag{1} \label{energy function}
 $$
 由于预计算 probe data 过程中应用了 apaptive parameterization，因此在搜索 sample 邻域中不能按常规使用固定大小的 grid(即搜索算法中的步长大小单位不应该固定)，因为这样会在压缩区域中丢失细节，或在放大区域中不充分搜索。对于此，作者对 step size 进行一次 scale，即步长(grid 数量)要乘以
 
-​									$$\Large |\frac{\partial f^{-1}_h}{\partial x}|^{-1}$$
-
+$$
+|\frac{\partial f^{-1}_h}{\partial x}|^{-1}
+$$
 其中 $\large f^{-1}_h$​​ 是预计算过程中生成的 [inverse flow field](#1.2.2)。在作者实验中，coarse-level 搜索区域大小为 7X7 samples，步长为 4 texels；fine-level 搜索区域大小为 3X3 samples，步长为 2 texels。(步长都是 scale 前的)。
 
 至此已经完成在 probe data 中选取最优 probe sample 的方法。下面将 probe sample 中的 glossy GI 信息加入到像素的最终着色中。
 
 如果简单的只收集一个 probe 的 probe sample 中的 glossy GI，相机移动过程中会出现 pop-up 不平滑现象。作者使用距离 novel view 最近（即距相机最近）的 8 个 probe，每个 probe 选取一个最优 probe sample，最终以以下方式整合：
 $$
-\large C=\frac{1}{Z}\sum\limits^8_{i=1} t_i\cdot exp(-\phi\varepsilon_i)\cdot c_i \tag{2} \label{the sum of neighboor probes}
+C=\frac{1}{Z}\sum\limits^8_{i=1} t_i\cdot exp(-\phi\varepsilon_i)\cdot c_i \tag{2} \label{the sum of neighboor probes}
 $$
 其中 $t_i$​ 是 trlinear weight；$\phi$ 是 falloff 因子，论文中设为 8；$Z$ 是归一化系数，确保加权和为一个 unity；$c_i$ 从 probe data 中得到，当 sample 没有 color-blend 时，在加载 $c_i$​​ 过程中使用 bilinear 插值。对于没有找到有效 sample 的像素，对上一帧的 probe 进行 reprojection。
 
@@ -220,8 +231,9 @@ $$
 
 现在需要求得一个 image filter $\mathcal{G}_I$ 将降低过 roughness $\rho '$ 的 $\mathcal{G}_{\rho'}$ 重构为原 roughness 的 $\mathcal{G}_{\rho}$​. 利用上述性质，可以得到
 
-​													$$\large \sum_I=\sum_{\rho}-\sum_{\rho'}$$
-
+$$
+\sum_I=\sum_{\rho}-\sum_{\rho'}
+$$
 从而得到 $\mathcal{G}_I$ （因为这里所有的 Gaussian 分布都采用均值为 0）。在实现中，作者使用 $\rho '=\rho/2$​ 作为预计算中光线路径中的第一个 glossy 顶点的 roughness 参数。
 
 至此，已经完成对 image-space filter footprint 的估计。下面是如何应用 image filter。
@@ -230,12 +242,13 @@ $$
 
 使用几何数据来估计公式 $\eqref{the sum of neighboor probes}$ 中的 $C$ ，
 $$
-\Large \hat{C}(\mathbf{x})=\frac{1}{Z(\mathbf{x})}\sum\limits_{\mathbf{x}_i\in\mathcal{N}(\mathbf{x})}\mathcal{G}_I(\mathbf{x}_i-\mathbf{x})w_r(\mathbf{x,x}_i)\space\varepsilon^{-1}(\mathbf{x}_i)C(\mathbf{x}_i) \tag{3} \label{glossy filtering}
+\hat{C}(\mathbf{x})=\frac{1}{Z(\mathbf{x})}\sum\limits_{\mathbf{x}_i\in\mathcal{N}(\mathbf{x})}\mathcal{G}_I(\mathbf{x}_i-\mathbf{x})w_r(\mathbf{x,x}_i)\space\varepsilon^{-1}(\mathbf{x}_i)C(\mathbf{x}_i) \tag{3} \label{glossy filtering}
 $$
 其中，$\mathcal{N}(\mathbf{x})$​​​​ 表示 $\mathbf{x}$​​​​ 处的 filter footprint；$\large \varepsilon$​​​​ 是 energy function $\eqref{energy function}$​​​​，其逆函数作为置信度来限制向匹配良好的像素的传播；range weight：
 
-​										$ \Large w_r(\mathbf{x,x}_i)=\mathbb{1}_{\mathbf{n(x)\cdot n}(\mathbf{x}_i)>\alpha_\mathbf{n}}\cdot \mathbb{1}_{|d(\mathbf{x})-d(\mathbf{x}_i)|<\alpha_d}\cdot \mathbb{1}_{m(\mathbf{x})=m(\mathbf{x}_i)} $
-
+$$
+w_r(\mathbf{x,x}_i)=\mathbb{1}_{\mathbf{n(x)\cdot n}(\mathbf{x}_i)>\alpha_\mathbf{n}}\cdot \mathbb{1}_{|d(\mathbf{x})-d(\mathbf{x}_i)|<\alpha_d}\cdot \mathbb{1}_{m(\mathbf{x})=m(\mathbf{x}_i)}
+$$
 作为 cross-bilateral 项，防止不连续的 normal 和 depth 或者不同反射材质 IDs 之间的 filtering. 实现中，作者设置 $\alpha_{\mathbf{n}}=0.8$​ 和 $\alpha_d=0.2$​；$Z$​​ is the normalizing partition function, ensuring filter weights sum to unity。
 
 > 求和的区域应该是 glossy BRDF lobe 对应的区域，对这个区域进行 filter

@@ -5,8 +5,10 @@ SH lighting 引入的是一种预计算技术，使得接近物理的渲染方�
 ## BRDF 
 
 **Rendering Equation:**
-
-$$L(x,\omega_o)=L_e(x,\omega_o)+\int_Sf_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)G(x,x')V(x,x')$$，其中
+$$
+L(x,\omega_o)=L_e(x,\omega_o)+\int_Sf_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)G(x,x')V(x,x')
+$$
+其中
 
 - $L(x,\omega_o)$：点 $x$ 沿着 $\omega_o$ 方向发出的光
 
@@ -63,9 +65,13 @@ SH 是定义在球面上的基函数，因此是二维(注意在球面，不是�
 
 SH 函数由 $y$ 表示，
 
-$$y^m_l(\theta,\phi)=\begin{cases} \sqrt{2}K^m_lcos(m\phi)P^m_l(cos\theta), \quad \quad m>0 \\\sqrt{2}K^m_lsin(-m\phi)P^{-m}_l(cos\theta), \space m<0 \\ K^0_lP^0_l(cos\theta) , \quad \quad \quad \quad \quad \quad \quad  m=0\end{cases}$$，其中 $P$ 是 Associated Legendre 多项式，$K$ 是用于 normalize 的缩放因子，
-
-$$K^m_l=\sqrt{\frac{(2l+1)(l-|m|!)}{4\pi (l+|m|!)}}$$
+$$
+y^m_l(\theta,\phi)=\begin{cases} \sqrt{2}K^m_lcos(m\phi)P^m_l(cos\theta), \quad \quad m>0 \\\sqrt{2}K^m_lsin(-m\phi)P^{-m}_l(cos\theta), \space m<0 \\ K^0_lP^0_l(cos\theta) , \quad \quad \quad \quad \quad \quad \quad  m=0\end{cases}
+$$
+其中 $P$ 是 Associated Legendre 多项式，$K$ 是用于 normalize 的缩放因子，
+$$
+K^m_l=\sqrt{\frac{(2l+1)(l-|m|!)}{4\pi (l+|m|!)}}
+$$
 
 > 注意这里的 $m$ 与 Associated Legendre 多项式中定义有所不同，$l$ 仍是由 $0$ 开始的正整数，$m$ 取 $[-l,l]$ 的有符号整数。$y^m_l(\theta,\phi) \quad where l\in \mathbf{R}^+,-l\leq m \leq l$
 
@@ -97,13 +103,16 @@ $\tilde{f}(s)=\sum^{n-1}_{l=0}\sum^l_{m=-l}c^m_ly^m_l(s)=\sum^{n^2}_{i=0}c_iy_i(
 
 定义一个简单的光源方程，
 
-$$light(\theta,\phi)=max(0,5cos\theta-4)+max(0,-4sin(\theta-\pi)*cos(\phi-2.5)-3)$$。
-
+$$
+light(\theta,\phi)=max(0,5cos\theta-4)+max(0,-4sin(\theta-\pi)*cos(\phi-2.5)-3)
+$$
 <img src="./Spherical Harmonic Lighting.assets\image-20210422203333538.png" alt="image-20210422203333538" style="zoom: 33%;" />
 
 将 $light(\theta,\phi)$ 投影到 SH 空间即求下述积分，
 
-$$c_i=\int^{2\pi}_0\int^\pi_0light(\theta,\phi)y_i(\theta,\phi)sin\theta d\theta d\phi$$
+$$
+c_i=\int^{2\pi}_0\int^\pi_0light(\theta,\phi)y_i(\theta,\phi)sin\theta d\theta d\phi
+$$
 
 > 此处积分只是投影公式 (1) 的球坐标形式，其中 $dS=sin\theta d\theta d\phi$，$dS$ 为球面上小矩形的面积，可知越接近极点的小矩形面积越小，越接近赤道的小矩形面积越大。具体推导参考 [微分立体角对应的微分面积](Basic Radiometry.md)。
 

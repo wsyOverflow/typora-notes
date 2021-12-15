@@ -50,13 +50,19 @@ Ray equation: $r(t)=O+t\textbf{d} \quad 0\leq t\leq \infty$ , 该式定义的是
 
 Key idea：三角形确定一个平面，可以先求光线与该平面的交点，再判断交点是否在三角形内部。
 
-定义平面任一点$P$ ： $(P-P')\cdot\textbf{N}=0$，其中 $P'$ 是平面上一点，$\textbf{N}$ 是平面法线。代入光线方程解交点，$$(P-P')\cdot \textbf{N}=(O+t\textbf{d}-P')\cdot \textbf{N}=0 \quad=>\quad t=\frac{(P'-O)\cdot \textbf{N}}{\textbf{d}\cdot \textbf{N}}\qquad (0\leq t \leq \infty)$$ 
+定义平面任一点$P$ ： $(P-P')\cdot\textbf{N}=0$，其中 $P'$ 是平面上一点，$\textbf{N}$ 是平面法线。代入光线方程解交点，
+$$
+(P-P')\cdot \textbf{N}=(O+t\textbf{d}-P')\cdot \textbf{N}=0 \quad=>\quad t=\frac{(P'-O)\cdot \textbf{N}}{\textbf{d}\cdot \textbf{N}}\qquad (0\leq t \leq \infty)
+$$
 
 ### Moller Trumbove Algorithm: 使用重心坐标一次解得光线与一个三角形的交点
 
 $$O+t\textbf{d}=(1-b_1-b_2)P_0+b_1P_1+b_2P_2$$，使用线性代数中的克拉姆法则可得
 
-$$\begin{pmatrix} t \\ b_1\\b_2 \end{pmatrix}=\frac{1}{\mathbf{S_1}\cdot\mathbf{E_1}}\begin{pmatrix}\mathbf{S_2}\cdot \mathbf{E_2} \\ \mathbf{S_1}\cdot \mathbf{S} \\ \mathbf{S_2}\cdot \mathbf{d}\end{pmatrix}, where, \begin{cases} \mathbf{E_1} = P_1-P_0 \\ \mathbf{E_2} = P_2-P_0 \\ \mathbf{S}=O-P_0 \\ \mathbf{S_1}=\mathbf{d} \times \mathbf{E_2} \\ \mathbf{S_2}=\mathbf{S} \times \mathbf{E_1} \end{cases}$$ 
+$$
+\begin{pmatrix} t \\ b_1\\b_2 \end{pmatrix}=\frac{1}{\mathbf{S_1}\cdot\mathbf{E_1}}\begin{pmatrix}\mathbf{S_2}\cdot \mathbf{E_2} \\ \mathbf{S_1}\cdot \mathbf{S} \\ \mathbf{S_2}\cdot \mathbf{d}\end{pmatrix}, where, \begin{cases} \mathbf{E_1} = P_1-P_0 \\ \mathbf{E_2} = P_2-P_0 \\ \mathbf{S}=O-P_0 \\ \mathbf{S_1}=\mathbf{d} \times \mathbf{E_2} \\ \mathbf{S_2}=\mathbf{S} \times \mathbf{E_1} \end{cases}
+$$
+
 
 如果 $t, b_1,b_2,1-b_1-b_2$都非负，则证明交点在三角形内。
 
@@ -70,11 +76,20 @@ Recall: 光线方向为相机/眼睛到像素的方向，然后以此方向与�
 
 <img src=".\Ray tracing.assets\image-20210324144344192.png" alt="image-20210324144344192" style="zoom:30%;" />
 
-image space -> screen space: $\begin{cases} screen_x=image_x \\ screen_y = -image_y \end{cases}$
+$$
+image space -> screen space: 
+\begin{cases} screen_x=image_x \\ screen_y = -image_y \end{cases}
+$$
 
-注意：image的坐标使用像素索引 (i, j) 表示时，要取像素中心 (i+0.5, j+0.5)。
 
-screen space -> clip space: $\begin{cases} clip_x=\frac{2screen_x}{width}-1 \\ clip_y=\frac{2screen_y}{height}-1 \end{cases}=\begin{cases}\frac{2image_x}{width}-1 \\ 1-\frac{2image_y}{height}\end{cases}$ 。
+注意：image的坐标使用像素索引 $(i, j)$ 表示时，要取像素中心 $(i+0.5, j+0.5)$。
+$$
+screen space -> clip space:
+\begin{cases} clip_x=\frac{2screen_x}{width}-1 \\ clip_y=\frac{2screen_y}{height}-1 \end{cases}=\begin{cases}\frac{2image_x}{width}-1 \\ 1-\frac{2image_y}{height}\end{cases}
+$$
+
+
+ 
 
 下面从 clip space -> view space，看起来像是透视投影变换的逆变换，但我们并不需要完整地做这样的逆变换。因为，对于 frustum 的视锥，近平面是最终渲染的平面，也成为 image plane。在投影变换中，近平面上的点，$Z$ 坐标不变，$x、y$ 坐标也只受到缩放。下图为 view space 下的 frustum:
 
@@ -82,16 +97,22 @@ screen space -> clip space: $\begin{cases} clip_x=\frac{2screen_x}{width}-1 \\ c
 
 对于屏幕中的点，clip space -> view space 的过程相当于，$[-1,1]\times [-1,1]$ 到 $[l.r]\times [b,t]$，对于矩形近平面为 $[-r.r]\times [-t,t]$，矩形宽为 $r$，高为 $t$，宽高比 $aspect \space ratio=\frac{r}{t}$。
 
-$$\begin{cases} view_x= clip_x \cdot r=clip_x \cdot aspect\space ratio \cdot t\\ view_y =clip_y\cdot t \end{cases} = \begin{cases} (\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot t \\ (1-\frac{2image_y}{height}) \cdot t \end{cases}$$
+$$
+\begin{cases} view_x= clip_x \cdot r=clip_x \cdot aspect\space ratio \cdot t\\ view_y =clip_y\cdot t \end{cases} = \begin{cases} (\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot t \\ (1-\frac{2image_y}{height}) \cdot t \end{cases}
+$$
+
 
 此时，我们已经得到像素转换到 view sapce 后的 $x,y$ 坐标，未知参数 $t$ 在之后的计算可以消去。下面计算 $z$ 坐标，此时使用垂直方向的 $fov$ 参数。有
 
-$$tan(\frac{fov}{2})=\frac{t}{-view_z}\quad => \quad view_z=-\frac{t}{tan(\frac{fov}{2})}$$
-
+$$
+tan(\frac{fov}{2})=\frac{t}{-view_z}\quad => \quad view_z=-\frac{t}{tan(\frac{fov}{2})}
+$$
 至此，$x,y,z$坐标都已经得到，相机/眼睛位于原点，那么光线方向 $\mathbf{d}=(view_x,view_y,view_z)$.normalized()。因为方向需要 normalize，所以 $x,y,z$ 中的 $t$ 都可以舍去。最终
-
-$$\mathbf{d}=\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot t, (1-\frac{2image_y}{height}) \cdot t, -\frac{t}{tan(\frac{fov}{2})}\right) \\ =\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio, (1-\frac{2image_y}{height}), -\frac{1}{tan(\frac{fov}{2})}\right).normalized() \\ =\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot tan(\frac{fov}{2}), (1-\frac{2image_y}{height})\cdot tan(\frac{fov}{2}), -1\right).normalized()$$
-
+$$
+\begin{align}
+\mathbf{d}&=\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot t, (1-\frac{2image_y}{height}) \cdot t, -\frac{t}{tan(\frac{fov}{2})}\right) \\ &=\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio, (1-\frac{2image_y}{height}), -\frac{1}{tan(\frac{fov}{2})}\right).normalized() \\ &=\left((\frac{2image_x}{width}-1)\cdot aspect\space ratio\cdot tan(\frac{fov}{2}), (1-\frac{2image_y}{height})\cdot tan(\frac{fov}{2}), -1\right).normalized()
+\end{align}
+$$
 至此，如果要为每个像素进行着色，那么一个直接的想法是，遍历所有像素，为每个像素生成一条光线。再求这条光线与场景中所有三角面的交点，取交点中离相机最近的一个。可以看出，这种做法时间复杂度非常高。下面介绍光线追踪前的加速预处理方法。
 
 ## Accelerating Ray-Surface Intersection

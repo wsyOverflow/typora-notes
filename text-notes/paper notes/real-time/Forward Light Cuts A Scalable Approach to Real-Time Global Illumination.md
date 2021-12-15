@@ -21,8 +21,9 @@
 
 设置阈值 $S_0$ ，面积大于 $S_0$ 的三角形为 Divergent 三角形，这类三角形需要经过一次 tessellation 特殊处理，之后描述。
 
-​							$$\large S_0=4\pi \frac{D^2_{near}}{N_{avg}}$$ ， 
-
+$$
+S_0=4\pi \frac{D^2_{near}}{N_{avg}}
+$$
 这个公式表达的是启发式地照亮一个像素，该像素至少周围有 $N_{avg}$ 个距离为 $D_{near}$ 的 VPLs 。参数配置：假设 $R_{scene}$ 为场景的半径长度，设置 $\large D_{near}=0.2\times R_{scene}$，$N_{avg}$ 在区间 $[64,1024]$ 内进行 quality-speed tradeoff。
 
 > `个人理解见`：[附录 1. 阈值 $S_0$ 的启发式的理解](#附录1)
@@ -33,8 +34,9 @@
 
 对于每一个三角形计算一个 $[0,1]$ 区间均匀分布的随机数 $u_{t_i}$，如果三角形面积 $\large\mathcal{A}(t_i)>u_{t_i}S_0$，则保留该三角形，否则丢弃。三角形是否保留的概率分布为
 
-​								$$\large \forall\space t_i\in \mathcal{L}, \quad P(t_i\in \mathcal{L^*})=\frac{\mathcal{A}(t_i)}{S_0}$$ ,
-
+$$
+\forall\space t_i\in \mathcal{L}, \quad P(t_i\in \mathcal{L^*})=\frac{\mathcal{A}(t_i)}{S_0}
+$$
 其中 $\mathcal{L}$ 是全体 regular 三角形的集合，$\mathcal{L^*}$ 是保留的三角形集合。由此可以看出，**三角形面积越小，被丢弃的概率越大。**对于整个场景的面能够保留下来的数量的期望为 $\large \mathbb{E}(N_{sample})=\frac{\mathcal{A}_{scene}}{S_0}$。
 
 ##### 基于随机提取过程的三角形多尺度划分
@@ -42,7 +44,7 @@
 将场景中三角形划分为 $(\mathcal{L}^0,...,\mathcal{L}^N)$ 共个 $N+1$ 子集，子集索引由 $0$ 到 $N$ 递增，影响距离递减（即尺度递减），子集包含的三角形数量递增。为了实现这样的划分，引入 $N+1$ 长度的递增序列 $\{S_0<...<S_N\}$。扩展随机提取过程到多尺度划分过程，三角形 $\large t_i$ 划分为子集 $\large \mathcal{L}^k$ 的概率为
 
 $$
-\large \forall k\in [0...N],\quad P(t_i\in \mathcal{L}^k)=\frac{\mathcal{A}(t_i)}{S_k} \tag{1}\label{partition probability}
+\forall k\in [0...N],\quad P(t_i\in \mathcal{L}^k)=\frac{\mathcal{A}(t_i)}{S_k} \tag{1}\label{partition probability}
 $$
 在多尺度划分过程中，divergent 三角形的定义更改为**面积大于 $S_N$ 的三角形**。
 
@@ -60,40 +62,45 @@ $$
 
 在 many-lights 框架中，对于 normal 为 $\large \vec{n_x}$ 的着色点 $x$ 的 indirect outgoing radiance，计算方法由连续积分近似为来自一个 VPLs 集合的 radiance 离散求和。
 
-$$\large L^{ML}(x,\vec{n_x})=\sum_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\mathcal{A}(t_i) \tag{2}$$
-
+$$
+L^{ML}(x,\vec{n_x})=\sum_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\mathcal{A}(t_i) \tag{2}
+$$
 $\large \mathcal{L}$ 表示场景中所有三角形集合，$\large  H(t_i,x,\vec{n_x})$ 表示 normal 为 $\large \vec{n_x}$ 的点 $\large x$ 接收到由 $\large t_i$(VPL) 出发的 radiance。对于 albedo 为 $\large  \rho_x$ 的 diffuse receiver， $\large H$ 的形式如下：
 
-​										$$\large H(t_i,x,\vec{n_x})=L(t_i,\bar{y_ix})\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}$$
-
+$$
+H(t_i,x,\vec{n_x})=L(t_i,\bar{y_ix})\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}
+$$
 其中 $\large \bar{u}$ 表示 normalized 向量，$\large <\vec{u},\vec{v}>^+=max(0,<\vec{u},\vec{v}>)$，$\large L(t_i,\bar{y_ix})$ 是离开 VPL 中心 $\large y_i\in t_i$ 朝向 $\large \bar{y_ix}$ 的 radiance， $\large d_i=max(\epsilon,||\vec{xy_i}||)$ 是进行过 clamp 的 $\large y_i$ 与 $\large x$ 之间的距离，避免奇异点。
 
 > `对近似的个人理解见`：[附录 2. 着色方程积分近似为求和的理解](#附录2)
 
 VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
 
-​										$$\large L(t_i,\bar{y_ix})=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+$$
-
+$$
+L(t_i,\bar{y_ix})=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+
+$$
 其中 $\large E_i$ 是直接到达三角形 $\large t_i$ 的直接 irradiance，由于 $\large <\vec{n_i},\bar{y_ix}>^+$ 可知上式并非 perfectly lambertian (一种简单的漫反射：光线被均匀的反射到表面上方的半球)，而只会在几何法线方向发生完美反射。$\large \frac{3}{2\pi}$ *用来保证能量守恒*。
 
 >  将 $\large L(t_i,\bar{y_ix})$ 代入 $\large H(t_i,x,\vec{n_x})$ 中有
 >
 >  $$
->  \large \begin{align}H(t_i,x,\vec{n_x})&=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}\\ &= \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{<\vec{n_x},\bar{xy_i}>(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2} \end{align}\tag{2} \label{received radiance}
+>  \begin{align}H(t_i,x,\vec{n_x})&=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+\frac{\rho_x}{\pi}\frac{<\vec{n_x},\bar{xy_i}>^+<\vec{n_i},\bar{y_ix}>^+}{d_i^2}\\ &= \frac{3}{2\pi^2}\rho_i\rho_xE(t_i)\frac{<\vec{n_x},\bar{xy_i}>(<\vec{n_i},\bar{y_ix}>)^2}{d_i^2} \end{align}\tag{2} \label{received radiance}
 >  $$
+>  
 
 ##### 2.2 多尺度划分下的 VPLs lighting 的近似
 
 上述进行的对三角形的多尺度随机划分引入了随机过程，因此 $\large L^{ML}(x,\vec{n_x})$  也变成了**随机量**，接下来就需要对该随机量进行估计。我们定义 $\large K(x,\vec{n_x})$ 为 $\large L^{ML}(x,\vec{n_x})$  **估计量(Estimator)**：
 
-​										$$\large K(x,\vec{n_x})=\sum\limits^N_{k=0}\sum\limits_{t_i\in\mathcal{L}^k}H(t_i,x,\vec{n_x})F^k(t_i,k)$$
-
+$$
+K(x,\vec{n_x})=\sum\limits^N_{k=0}\sum\limits_{t_i\in\mathcal{L}^k}H(t_i,x,\vec{n_x})F^k(t_i,k)
+$$
 其中 $\large F^k(t_i,k)$ 是一个未知函数，参数 $\large x$ 为着色点，$\large t_i$ 为 VPL 所在三角形，$k$ 为子集索引。
 
 下面就要确定 $\large F^k(t_i,k)$ 的形式：
 
 $$
-\large\begin{align} \mathbb{E}\left[K(x,\vec{n_x})\right]&= \mathbb{E}\left[\sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}H(t_i^k,x,\vec{n_x})F^k(t_i^k,x)\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x}) \mathbb{E}\left[\sum\limits^N_{k=0}F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)\end{align}\tag{3}\label{many light estimator}
+\begin{align} \mathbb{E}\left[K(x,\vec{n_x})\right]&= \mathbb{E}\left[\sum\limits^N_{k=0}\sum\limits_{t_i^k\in \mathcal{L}^k}H(t_i^k,x,\vec{n_x})F^k(t_i^k,x)\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x}) \mathbb{E}\left[\sum\limits^N_{k=0}F^k(t_i,x)\mathbb{I}_{t_i\in \mathcal{L}^k}\right] \\ &= \sum\limits_{t_i\in \mathcal{L}}H(t_i,x,\vec{n_x})\sum\limits^N_{k=0}F^k(t_i,x)P(t_i\in \mathcal{L}^k)\end{align}\tag{3}\label{many light estimator}
 $$
 其中 $\large \mathbb{I}_{t_i\in \mathcal{L}^k}$ 为指示函数，当 $\large t_i\in \mathcal{L}^k$ 时值为 $1$，否则为 0。
 
@@ -102,7 +109,7 @@ $$
 我们要选取 $F^k(t_i,x)$ 使得 $K(x,\vec{n_x})$ 为 $L^{ML}(x,\vec{n_x})$ 的无偏估计，即 $\mathbb{E}\left[K(x,\vec{n_x})\right]=L^{ML}(x,\vec{n_x})$，比较式 (2) 和 (4) 可有
 
 $$
-\large \forall x,\quad \sum\limits_k F^k(t_i,x)P(t_i\in \mathcal{L}^k)=\mathcal{A}(t_i)\label{partition derivate}
+\forall x,\quad \sum\limits_k F^k(t_i,x)P(t_i\in \mathcal{L}^k)=\mathcal{A}(t_i)\label{partition derivate}
 $$
 根据划分策略，将 $\large F^k$ 定义为 	$\large F^k(t_i,x)=S_kf^k(t_i,x)$
 
@@ -115,7 +122,7 @@ $$
 $\large f^k(t_i,x)$ 划分函数的参数 $\large t_i,x$ 都为三维，论文采用一种方法将划分函数进行降维近似处理，此方法参考了论文  *Point-based approximate color bleeding* 中的 nested balls: $\large \mathcal{B}_h(t_i)$，其定义如下：
 
 $$
-\large \forall h\in \mathbb{R}^*, \quad \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n})\geq h\} \tag{4} \label{partition nested ball}
+\forall h\in \mathbb{R}^*, \quad \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \underset{\vec{n_x}}{max}\space H(t_i,x,\vec{n})\geq h\} \tag{4} \label{partition nested ball}
 $$
 
 > $\large H$ 是 $\large x$ 接收到 $\large t_i$ VPL 的 radiance，这个 nested ball 的含义就是定义了一个对着色点 $\large x$ 的 radiance 贡献较为显著的区域，这个显著程度由 $\large h$ 决定。
@@ -123,7 +130,7 @@ $$
 此外，考虑 receiver 正对着 emitter 的情况，即 $\large \vec{n_x}=\bar{xy_i}$，此时 $\large H$ 达到最大值，有：
 
 $$
-\large \mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}\leq D(h)\} \tag{5} \label{nested ball}
+\mathcal{B}_h(t_i)=\{x\in\mathbb{R}^3\space s.t. \space \frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}\leq D(h)\} \tag{5} \label{nested ball}
 $$
 其中  $\large D(h)=\frac{1}{\pi}\sqrt{\frac{3\rho_x\rho_iE(t_i)}{2h}}$
 
@@ -137,16 +144,18 @@ $$
 
 作者做了一个假设：nest ball 边界上的三维划分 $\large f^k(t_i,x)$ 是不变的，通过如下 $\large \mathbb{R}^3$ 到 $\large \mathbb{R}$ 的映射：
 
-​										$$\large \forall x\in \mathbb{R}^3, \quad d(t_i,x)=\frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}$$
-
+$$
+\forall x\in \mathbb{R}^3, \quad d(t_i,x)=\frac{||x-y_i||}{<\vec{n_i},\bar{xy_I}>^+}
+$$
 可以将三维划分将为一维划分：
 
-​										$$\large \forall x\in \mathbb{R}^3, \quad f^k(t_i,x)=\tilde{f}^k(d(t_i,x))$$
-
+$$
+\forall x\in \mathbb{R}^3, \quad f^k(t_i,x)=\tilde{f}^k(d(t_i,x))
+$$
  $\large f^k$ 将会在 rendering 中用作 splat function，因此尽可能使得 $f^k$ 易于计算且 smooth，论文定义为下面一组分段线性函数
 
 $$
-\large \forall d\in\mathbb{R},\quad \tilde{f}^k(d)=\begin{cases}\begin{align}&1 &k=0\space and \space d\in[0,D_1] \\ &\frac{d-D_{k-1}}{D_k-D_{k-1}} &k>0\space and \space d\in[D_{k-1},D_k] \\ &\frac{D_{k+1}-d}{D_{k+1}-D_k} &k>0 \space and \space d\in [D_k,D_{k+1}]\\&0 &otherwise\end{align}\end{cases}
+\forall d\in\mathbb{R},\quad \tilde{f}^k(d)=\begin{cases}\begin{align}&1 &k=0\space and \space d\in[0,D_1] \\ &\frac{d-D_{k-1}}{D_k-D_{k-1}} &k>0\space and \space d\in[D_{k-1},D_k] \\ &\frac{D_{k+1}-d}{D_{k+1}-D_k} &k>0 \space and \space d\in [D_k,D_{k+1}]\\&0 &otherwise\end{align}\end{cases}
 $$
 $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
 
@@ -154,11 +163,14 @@ $\large \{D_k\}$ 定义了每一级 VPL 的影响距离。
 
 作者为了模仿传统的层级表示，采用了子集大小几何级下降的参数配置。从前述划分策略来看，$\large S_k$ 影响到划分子集的结果，此外，可以将 $\large S_k$ 理解为子集 $\large \mathcal{L}^k$ 的平均面积，应几何级增加，因此定义如下参数配置：
 
-​											$$\large S_k=S_0\mu^k$$
-
+$$
+S_k=S_0\mu^k
+$$
 其中 $\large \mu >1$ 是用户定义的参数，论文建议 $[1.4,5]$。作者还建议定义影响距离参数，这样每个点都只会有一个可控数量的 VPL 到达，控制计算量，如：
 
-​											$$\large\begin{cases}D_k=\sqrt{S_0\mu^k}\\ D_{N+1}=D_{N}\end{cases}$$
+$$
+\begin{cases}D_k=\sqrt{S_0\mu^k}\\ D_{N+1}=D_{N}\end{cases}
+$$
 
 > 个人理解见：[附录 6. 模拟传统层级的几何级下降的理解](#附录6)
 
@@ -211,11 +223,15 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 首先来看精确的 rendering equation，
 
-​									$$\large L(x,\omega_o)=\int_{\Omega^+}\space f_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)cos\theta \space d\omega_i$$
-
+$$
+L(x,\omega_o)=\int_{\Omega^+}\space f_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)cos\theta \space d\omega_i
+$$
 上式为对立体角的积分，转为对光源面积的积分为
 
-​									$$\large L(x,\omega_o)=\int_{A}\space f_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)\frac{cos\theta cos\theta'}{||x'-x||^2} \space dA$$
+$$
+L(x,\omega_o)=\int_{A}\space f_r(x,\omega_i\rightarrow\omega_o)L_i(x',\omega_i)\frac{cos\theta cos\theta'}{||x'-x||^2} \space dA
+$$
+
 
 $L^{ML}$ 的形式即从对光源面积的积分近似而来，diffuse 下 BRDF 是常量，即 $H$ 中的 $\large\frac{\rho_x}{\pi}$，$L_i$ 对应 $H$ 中的 $L$。因此，$L^{ML}(x,\vec{n_x})$ 与 $L(x,\omega_o)$ 唯一不同的是一个是对总体面积的连续积分，一个是将每个 VPL 的面积视为微元的离散求和。可知，在 VPL 面积较小时，这种近似较为接近正确。
 
