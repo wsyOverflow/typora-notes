@@ -4,15 +4,15 @@ Whitted style 光线追踪使用 Blinn-Phong 着色模型，着色效果不真�
 
 ## 相关术语
 
-| 物理量                              | 公式                                                         | 单位         |
-| ----------------------------------- | ------------------------------------------------------------ | ------------ |
-| Radiant Energy(辐射能)              | $Q:$电磁辐射能量                                             | J(焦耳)      |
-| Radiant Flux(辐射通量)或Power(功率) | $\Phi=\frac{dQ}{dt}$                                         | W(瓦特)或lm  |
-| Angle(角度)                         | $\theta=\frac{l}{r}$                                         | rad(弧度)    |
-| Solid Angle(立体角)                 | $\Omega=\frac{A}{r^2}$                                       | sr(球面角度) |
-| Radiant Intensity(辐射强度)         | $I=\frac{\Phi}{4\pi}$                                        | cd(烛光)     |
-| Irradiance(辐照度)                  | $E(x)=\frac{d\Phi (x)}{dA}$                                  | lux(照度)    |
-| radiance(辐射)或luminance(亮度)     | $L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$ | nit(尼特)    |
+| 物理量                              | 公式                                                         | 单位                           |
+| ----------------------------------- | ------------------------------------------------------------ | ------------------------------ |
+| Radiant Energy(辐射能)              | $Q:$电磁辐射能量                                             | $J$(焦耳)                      |
+| Radiant Flux(辐射通量)或Power(功率) | $\Phi=\frac{dQ}{dt}$                                         | $W$(瓦特) 或 lm                |
+| Angle(角度)                         | $\theta=\frac{l}{r}$                                         | rad(弧度)                      |
+| Solid Angle(立体角)                 | $\Omega=\frac{A}{r^2}$                                       | sr(球面角度)                   |
+| Radiant Intensity(辐射强度)         | $I=\frac{\Phi}{4\pi}$                                        | $W/sr$ 或 cd(烛光)             |
+| Irradiance(辐照度)                  | $E(x)=\frac{d\Phi (x)}{dA}$                                  | $W/m^2$ 或 lux(照度)           |
+| Radiance(辐射率)或luminance(亮度)   | $L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$ | $W/(m^2\cdot sr)$ 或 nit(尼特) |
 
 #### 1. Radiant Energy(辐射能量)
 
@@ -22,7 +22,9 @@ Whitted style 光线追踪使用 Blinn-Phong 着色模型，着色效果不真�
 
 单位时间内释放(emitted)、反射(reflected)、传播(transmitted)或接收(received)的能量，即功率
 
-$$\Phi = \frac{dQ}{dt}$$
+$$
+\Phi = \frac{dQ}{dt}
+$$
 
 #### 3. Angle
 
@@ -88,9 +90,9 @@ Irradiance 衰减：$E=\frac{\Phi}{4\pi r^2}$ ，$\Phi$ 记录的是单位半径
 
 
 
-#### 8. Radiance(辐射)
+#### 8. Radiance(辐射率)
 
-Radiance 用于描述光在环境中的分布的基本场量。辐射(Radiance)或亮度(luminance) ：是指一个表面在**每单位立体角、每单位投影面积**上所发射(emitted)、反射(reflected)、透射(transmitted)或接收(received)的辐射通量(功率)。
+Radiance 用于描述光在环境中的分布的基本场量。辐射率(Radiance)或亮度(luminance) ：是指一个表面在**每单位立体角、每单位投影面积**上所发射(emitted)、反射(reflected)、透射(transmitted)或接收(received)的辐射通量(功率)。
 
 $$L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$$，Light traveling along a Ray                  <img src="Basic Radiometry.assets\image-20210418113916011.png" alt="image-20210418113916011" style="zoom:25%;" />
 
@@ -110,7 +112,7 @@ $$L(p,\omega)=\frac{d^2\Phi (p,\omega)}{d\omega dA cos\theta}$$，Light travelin
 
 > 具有单位立体角限制的 irradiance 等同于 radiance，具有单位投影面积的 Radiance Intensity 等同于 radiance
 
-## 辐照度(Irradiance) VS. 辐射(Radiance)
+## 辐照度(Irradiance) VS. 辐射率(Radiance)
 
 - Irradiance：在面积 $dA$ 的总辐射通量
 - Radiance：在面积 $dA$ 、方向 $d\omega$ 上的辐射通量
