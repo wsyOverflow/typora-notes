@@ -42,15 +42,17 @@ $$
 
 <img src=".\Basic Radiometry.assets\image-20210418105937707.png" alt="image-20210418105937707" style="zoom: 25%;" />
 
+- 球面坐标：$\theta\in[0,\pi],\phi\in[0,2\pi]$
+
 - 单位面积：$dA=(rd\theta)(rsin\theta d\phi)=r^2sin\theta d\theta d\phi$，单位立体角对应的球面上单位区域的面积
 
-- 单位立体角：$d\omega = \frac{dA}{A^2}=sin\theta d\theta d\phi$
+- 单位立体角：$d\omega = \frac{dA}{r^2}=sin\theta d\theta d\phi$
 
 - 球面的微分立体角：$\Omega=\int_{S^2}d\omega=\int_0^{2\pi}\int_0^{\pi}sin\theta d\theta d\phi=4\pi$，其中 $S^2$ 是求面积
 
   > $dA$ 的证明，$dA$ 可看作 $d\theta$ 和 $d\phi$ 对应的微分弧组成的小矩形，如下图中红色弧线与蓝色弧线
   >
-  > <img src="Basic Radiometry.assets\2.PNG" alt="2" style="zoom:25%;" />
+  > <img src="Basic Radiometry.assets\2.PNG" alt="2" style="zoom: 50%;" />
   >
   > 其中蓝色弧线位于半径为 $r_\phi$ 的小圆上，而红色弧线位于半径为 $r_\theta$ 的大圆上，又知道 $sin\theta = \frac{r_\phi}{r_\theta}$，由弧长公式有
   >
