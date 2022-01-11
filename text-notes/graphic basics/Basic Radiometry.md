@@ -74,7 +74,7 @@ $\omega$ 作为单位立体角的方向向量
 
 点光源**每立体角**发出的功率：$I(\omega)=\frac{d\Phi}{d\omega}$
 
-#### 7. Irradiance(辐照度)
+#### 7. Irradiance(辐照度)<a name="7. Irradiance(辐照度)"></a>
 
 辐照度是每(垂直/投影)**单位面积**入射到一个表面上一点的辐射通量(功率)，$E(x)=\frac{d\Phi(x)}{dA}$
 
