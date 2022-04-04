@@ -1,6 +1,6 @@
 ## Summary
 
-`Forward Light Cuts: A Scalable Approach to Real-Time Global Illumination  `  
+`Forward Light Cuts: A Scalable Approach to Real-Time Global Illumination  `  [[1]](#[1])
 
 这篇论文假设了次级光源为 diffuse 材质的场景，提出了一种能够很好结合 tessellation 和 geometry 阶段的并行特性的高效实时全局光照近似计算算法。该算法基于 many-light 框架，首先通过将场景中三角形以一种概率分布划分为 multi-scale radiance 子集，每个子集中的每个三角形生成一个扰动的 VPL，这样就组成了多尺度的 VPL 集合。之后求解该 VPL 集合形成的 many-light 问题来近似全局光照。该算法既模拟了传统层级的光源数量的随尺度增加的几何级下降，又具有可高度并行的线性设计，在场景完全动态并且涉及大量物体时，相比于之前算法，画面无明显缺陷并且具有较大的性能提升。
 
@@ -210,6 +210,12 @@ regular pipeline 即对 regular 三角形采样分级，再进行 VPL lighting �
 
 - [ ] 划分整体过程中的整体应该怎么理解？
 - [ ] Splatting indirect illumination   技术不了解
+
+
+
+## Reference
+
+<a name="[1]">[1]</a> Gilles LAURENT, Cyril DELALANDRE, Grégoire de LA RIVIÈRE, and Tamy BOUBEKEUR. 2016. Forward Light Cuts: A Scalable Approach to Real-Time Global Illumination. <i>Comput. Graph. Forum</i> 35, 4 (July 2016), 79–88.
 
 
 

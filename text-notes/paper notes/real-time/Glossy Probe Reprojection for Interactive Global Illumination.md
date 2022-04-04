@@ -1,6 +1,6 @@
 ## Summary
 
-```Glossy Probe Reprojection for Interactive Global Illumination  ```
+```Glossy Probe Reprojection for Interactive Global Illumination  ``` [[8]](#[8])
 
 这篇论文提出了一种基于 light probe 思想的实时全局光照算法，高效解决带有 glossy 路径的全局光照问题。light probe 思想在场景中放置多个 light probe，每个 light probe 包含了该位置的间接光照信息，这些信息通过预计算过程存入 light probe，并用于在实时渲染过程中计算着色点的全局光照。本论文提出自适应的 probe 参数化，通过评估不同角度、不同位置的几何信息，自适应不同情况所需要的 probe 分辨率，用以缓解 glossy 全局光照带来的高内存消耗问题。在实时渲染中提出基于 specular path perturbation 的间接光反射点估计方法，高效 reproject glossy path 信息到实时的 novel view space，进而收集到实时全局光照信息。同时论文改善了 occlusion boundaries 附近出现的硬边界问题，通过预计算过程中降低几何 roughness 来预计算 probe data，以收集到更大范围的全局光照信息，在实时渲染中设计 filter 重构原 roughness，达到硬边界的平滑过渡。
 
@@ -58,14 +58,14 @@ $$
 - $\large m_{mat}$​ 满足了 a)，越光滑 $\large m_{mat}$​ 越大，得到的分辨率参数 $m$​ 也越大；
 
 - $\large m_{size}$​​​​ 考虑了 b) 中距离与角度的要求，其计算为 
-                              $$
-                              \large m_{size}=\frac{m^2_{depth}}{m_{face}}cos(\theta_{long})
+                          $$
+                          \large m_{size}=\frac{m^2_{depth}}{m_{face}}\cos(\theta_{long})
   $$
 
   >  depth 越大，表面面积相对越小，对应较大的 $m$​；$\large m_{face}$​​ 越小，表示入射光与 normal 夹角越大，越 grazing，对应较大的 $m$
 
-                              - [ ] 不明白：This term converts probe area to actual object size, compensating for perspective and angular foreshortening akin to a form factor. $\large \theta_{long}$​​ is the longitude angle, which compensates for size variations induced by the lat-long base parameterization.  
-                              
+  - [ ] 不明白：This term converts probe area to actual object size, compensating for perspective and angular foreshortening akin to a form factor. $\large \theta_{long}$ is the longitude angle, which compensates for size variations induced by the lat-long base parameterization.  
+  
 - 要求 c) 需要对局部几何复杂度分析，作者使用频率分析代替：
      $$
      \large m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1
@@ -154,7 +154,7 @@ glossy 光线路径的全局光照渲染概要：
 
 #### 2.2 Gathering View-dependent Color
 
-结合 specular path perturbation 和预计算中表面曲率估计的方法，只是得到了 novel view 到 probe view 的 specular motion。为了得到更加鲁棒的结果，需要在 $x'$ 对应的 probe samp 的领域中搜索，选取最优的 probe sample。
+结合 specular path perturbation 和预计算中表面曲率估计的方法，只是得到了 novel view 到 probe view 的 specular motion。为了得到更加鲁棒的结果，需要在 $x'$ 对应的 probe sample 的领域中搜索，选取最优的 probe sample。
 
 > 在 $p\rightarrow  x \rightarrow  q \rightarrow  x' \rightarrow  p'$ 光线路径中，$p'\rightarrow x'\rightarrow q$ 为镜面反射的路径，但 probe data 中存储的是 glossy GI，glossy BRDF 是一个 lobe，光线路径对应的是一个区域，只要最终能到达 $q$ 即为所找 probe sample。因此，$x'$ 对应的样本附近区域也属于该镜面反射对应的 glossy 路径。因此可以在这个区域的 probe samples 中选取最优的 sample。注意：probe data 中的每个 sample 携带的都是其 probe 对应的 3D grid 区域的 glossy BRDF 的全局光照信息，若要使得像素的全局光照信息更加平滑，应收集不同区域 (即不同 probe) 的全局光照信息。
 
@@ -293,3 +293,5 @@ $$
 <a name="[6]">[6]</a> Bruce Walter, Stephen R Marschner, Hongsong Li, and Kenneth E Torrance. 2007. Microfacet Models for Refraction through Rough Surfaces. Rendering Techniques 2007 2007, 18th.  
 
 <a name="[7]">[7]</a> Eduardo SL Gastal and Manuel M Oliveira. 2011. Domain transform for edge-aware image and video processing. ACM Transactions on Graphics (TOG) (2011), 1–12.  
+
+<a name="[8]">[8]</a> *Simon Rodriguez, Thomas Leimkühler, Siddhant Prakash, Chris Wyman, Peter Shirley, and George Drettakis. 2020. Glossy probe reprojection for interactive global illumination.* *ACM Trans. Graph.* *39, 6, Article 237 (December 2020), 16 pages. DOI:https://doi.org/10.1145/3414685.3417823*
