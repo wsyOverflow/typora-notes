@@ -28,7 +28,7 @@ Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 p
 
 - (b) probe 空间的环境贴图(只存储 glossy BRDF 计算的颜色值)
 
-- (c) 将每个面是为镜面，完美反射过程中的几何信息(反射点、及其材质 ID)
+- (c) 将每个面视为镜面，记录完美反射过程中的几何信息(反射点、及其材质 ID)
 
 这三张贴图都是 360 度贴图，将 probe 作为相机，贴图中每个 texel 存储的是不同角度看向场景得到的信息，即 probe view 下的渲染信息。
 
@@ -46,20 +46,20 @@ Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 p
 
 ##### 1.2.1 Adaptive Resolution Map 计算
 
-一个 Adaptive resolution map 的元素表示 probe 每个方向对应的 probe resolution。计算该 Map 前先使用以 probe 出发的 ray casting 构建 4 个 256x128 的 buffers，(i) 材质 smoothness $\large m_{mat}$，(ii) 深度值 $\large m_{depth}$，(iii) 法线 $\large m_{norm}$，(iv) facing angle $\large m_{face}$ (入射光方向与表面法线点乘)。
+一个 Adaptive resolution map 的元素表示 probe 每个方向对应的 probe resolution 参数。计算该 Map 前先使用以 probe 出发的 ray casting 构建 4 个 256x128 的 buffers，(i) 材质 smoothness $\large m_{mat}$，(ii) 深度值 $\large m_{depth}$，(iii) 法线 $\large m_{norm}$，(iv) facing angle $\large m_{face}$ (入射光方向与表面法线点乘)。
 
 Adaptive resolution map 的元素计算：
 
 $$
-\large m=m_{mat}(m_{size}+m_{complexity})
+m=m_{mat}(m_{size}+m_{complexity})
 $$
 可以看出 
 
 - $\large m_{mat}$​ 满足了 a)，越光滑 $\large m_{mat}$​ 越大，得到的分辨率参数 $m$​ 也越大；
 
 - $\large m_{size}$​​​​ 考虑了 b) 中距离与角度的要求，其计算为 
-                          $$
-                          \large m_{size}=\frac{m^2_{depth}}{m_{face}}\cos(\theta_{long})
+                      $$
+                      m_{size}=\frac{m^2_{depth}}{m_{face}}\cos(\theta_{long})
   $$
 
   >  depth 越大，表面面积相对越小，对应较大的 $m$​；$\large m_{face}$​​ 越小，表示入射光与 normal 夹角越大，越 grazing，对应较大的 $m$
@@ -68,7 +68,7 @@ $$
   
 - 要求 c) 需要对局部几何复杂度分析，作者使用频率分析代替：
      $$
-     \large m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1
+     m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1
      $$
 
      - [ ] 2D Discrete consine transform [[2]](#[2]): $\mathbf{b}$​ 是 basis function，basis function 与 法线的卷积用来分析 local neighborhood 的频率信息
@@ -124,7 +124,7 @@ glossy 光线路径的全局光照渲染概要：
 
 1. 需要将预计算的 light probe 进行重投影(reprojection)。为此，先光栅化一个 G-buffer，其中包含 position、normal、表面曲率和材质(ID和roughness)。
 
-2. 使用 ray-caster，发射光线到 specular pixels(应该指把像素看作 specular)，再经过经过完美镜面反射。ray data 中存储反射光的 hit position 和对应的材质 IDs。
+2. 使用 ray-caster，发射光线到 specular pixels(应该指把像素看作 specular)，再经过完美镜面反射。ray data 中存储反射光的 hit position 和对应的材质 IDs。
 
 3. 之后基于像素附近收集的 probes 信息来计算像素的 glossy 光照信息。
 
@@ -154,11 +154,11 @@ glossy 光线路径的全局光照渲染概要：
 
 #### 2.2 Gathering View-dependent Color
 
-结合 specular path perturbation 和预计算中表面曲率估计的方法，只是得到了 novel view 到 probe view 的 specular motion。为了得到更加鲁棒的结果，需要在 $x'$ 对应的 probe sample 的领域中搜索，选取最优的 probe sample。
+结合 specular path perturbation 和预计算中表面曲率估计的方法，只是得到了 novel view 到 probe view 的 specular motion。为了得到更加鲁棒的结果，需要在 $x'$ 对应的 probe sample 的区域中搜索，选取最优的 probe sample。
 
 > 在 $p\rightarrow  x \rightarrow  q \rightarrow  x' \rightarrow  p'$ 光线路径中，$p'\rightarrow x'\rightarrow q$ 为镜面反射的路径，但 probe data 中存储的是 glossy GI，glossy BRDF 是一个 lobe，光线路径对应的是一个区域，只要最终能到达 $q$ 即为所找 probe sample。因此，$x'$ 对应的样本附近区域也属于该镜面反射对应的 glossy 路径。因此可以在这个区域的 probe samples 中选取最优的 sample。注意：probe data 中的每个 sample 携带的都是其 probe 对应的 3D grid 区域的 glossy BRDF 的全局光照信息，若要使得像素的全局光照信息更加平滑，应收集不同区域 (即不同 probe) 的全局光照信息。
 
-**probe sample 搜索算法**：使用 two-level 的 grid 搜索算法，coarse-level 使用在较大的区域内使用较大的 step-size 进行搜索，得到 coarse-level 的最优 sample。然后以这个最优 sample 为中心，使用较小的 step-size 进行 fine-level 搜索。
+**probe sample 搜索算法**：使用 two-level 的 grid 搜索算法，coarse-level 在较大的区域内使用较大的 step-size 进行搜索，得到 coarse-level 的最优 sample。然后以这个最优 sample 为中心，使用较小的 step-size 进行 fine-level 搜索。
 
 **评估 probe sample 的优劣**：接下来使用 [Fig 2(b)](#Fig 2) 中的符号，probe view 下的 reflector position $r_p$、normal $n_p$ 和 reflected position $R_p$；novel view 下对应的 $r_v$、$n_v$ 和 $R_v$​ 。设计 energy function 来评估 probe sample 优劣的四个标准：
 
@@ -169,9 +169,9 @@ glossy 光线路径的全局光照渲染概要：
 - 相近的表面法线 $n_v$​ 和 $n_p$​ 可以确保一致的光照。对此引入 $\large s_c=1-(n_v\cdot n_p)$​
 
 - 样本应该具有相近的 reflected ray，对此引入：
-                       $$
-                       s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}​
-                       $$
+                   $$
+                   s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}
+                   $$
 
 结合以上标准，设计 energy function 为：
 
@@ -191,7 +191,7 @@ $$
 $$
 C=\frac{1}{Z}\sum\limits^8_{i=1} t_i\cdot exp(-\phi\varepsilon_i)\cdot c_i \tag{2} \label{the sum of neighboor probes}
 $$
-其中 $t_i$​ 是 trlinear weight；$\phi$ 是 falloff 因子，论文中设为 8；$Z$ 是归一化系数，确保加权和为一个 unity；$c_i$ 从 probe data 中得到，当 sample 没有 color-blend 时，在加载 $c_i$​​ 过程中使用 bilinear 插值。对于没有找到有效 sample 的像素，对上一帧的 probe 进行 reprojection。
+其中 $t_i$​ 是 trilinear weight；$\phi$ 是 falloff 因子，论文中设为 8；$Z$ 是归一化系数，确保加权和为一个 unity；$c_i$ 从 probe data 中得到，当 sample 没有 color-blend 时，在加载 $c_i$​​ 过程中使用 bilinear 插值。对于没有找到有效 sample 的像素，对上一帧的 probe 进行 reprojection。
 
 ### 3. Two-step Convolution For Accurate Warping of Glossy Probes
 

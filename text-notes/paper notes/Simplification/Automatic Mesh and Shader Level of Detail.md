@@ -66,7 +66,7 @@ Joint Optimization 方法所解决的优化问题如 $\eqref{joint optimization}
 
 ##### 1.1.1 Shader Simplification
 
-  Shader 简化是基于 genetic programming 的思想，先将 Shader 代码转为 Abstract Syntax Trees (ASTs) 和Program Dependence Graphs (PDGs)，再通过简化规则对 AST 进行修改，最终将修改后的 AST 转回 Shader 源码，即得到 Shader 变体。简化规则详细请查看 [[1]](#[1])、[[2]](#[2])、[[3]](#[3]).
+Shader 简化是基于 genetic programming 的思想，先将 Shader 代码转为 Abstract Syntax Trees (ASTs) 和Program Dependence Graphs (PDGs)，再通过简化规则对 AST 进行修改，最终将修改后的 AST 转回 Shader 源码，即得到 Shader 变体。简化规则详细请查看 [[1]](#[1])、[[2]](#[2])、[[3]](#[3]).
 
 ##### 1.1.2 Mesh Simplification
 

@@ -2,7 +2,7 @@
 
 `Forward Light Cuts: A Scalable Approach to Real-Time Global Illumination  `  [[1]](#[1])
 
-这篇论文假设了次级光源为 diffuse 材质的场景，提出了一种能够很好结合 tessellation 和 geometry 阶段的并行特性的高效实时全局光照近似计算算法。该算法基于 many-light 框架，首先通过将场景中三角形以一种概率分布划分为 multi-scale radiance 子集，每个子集中的每个三角形生成一个扰动的 VPL，这样就组成了多尺度的 VPL 集合。之后求解该 VPL 集合形成的 many-light 问题来近似全局光照。该算法既模拟了传统层级的光源数量的随尺度增加的几何级下降，又具有可高度并行的线性设计，在场景完全动态并且涉及大量物体时，相比于之前算法，画面无明显缺陷并且具有较大的性能提升。
+这篇论文假设了次级光源为 diffuse 材质的场景，并且不考虑次级光照的阴影，提出了一种能够很好结合 tessellation 和 geometry 阶段的并行特性的高效实时全局光照近似计算算法。该算法基于 many-light 框架，将场景中的三角形类比为虚拟点光源，首先通过将场景中三角形以一种概率分布划分为 multi-scale radiance 子集，在每个子集中的每个三角形上随机采样生成一个扰动的 VPL，这样就组成了多尺度的 VPL 集合。之后求解该 VPL 集合形成的 many-light 问题来近似全局光照。该算法既模拟了传统层级的光源数量的随尺度增加的几何级下降，又具有可高度并行的线性设计，在场景完全动态并且涉及大量物体时，相比于之前算法，画面质量无明显损失并且具有较大的性能提升。
 
 ## Motivation
 
@@ -24,15 +24,15 @@
 $$
 S_0=4\pi \frac{D^2_{near}}{N_{avg}}
 $$
-这个公式表达的是启发式地照亮一个像素，该像素至少周围有 $N_{avg}$ 个距离为 $D_{near}$ 的 VPLs 。参数配置：假设 $R_{scene}$ 为场景的半径长度，设置 $\large D_{near}=0.2\times R_{scene}$，$N_{avg}$ 在区间 $[64,1024]$ 内进行 quality-speed tradeoff。
+这个公式表达的是启发式地照亮一个像素，该像素周围有 $N_{avg}$ 个距离为至少 $D_{near}$ 的 VPLs 。参数配置：假设 $R_{scene}$ 为场景的半径长度，设置 $\large D_{near}=0.2\times R_{scene}$，$N_{avg}$ 在区间 $[64,1024]$ 内进行 quality-speed tradeoff。
 
 > `个人理解见`：[附录 1. 阈值 $S_0$ 的启发式的理解](#附录1)
 
-#### 1.2 三角形提取过程
+#### 1.2 三角形抽取过程
 
-提取过程目的是丢弃小三角形，因为这类三角形引入的 diffuse indirect lighting 对最终的渲染贡献很小，丢弃会加快速度，但如果全部无差别丢弃，则会丢失那些多个小三角形一起作用而带来的明显间接光照效果，因此提取操作中引入一种随机过程，即**随机提取过程**：
+抽取操作目的是丢弃小三角形，因为这类三角形引入的 diffuse indirect lighting 对最终的渲染贡献很小，丢弃会加快速度，但如果全部无差别丢弃，则会丢失那些多个小三角形一起作用而带来的明显间接光照效果，因此提取操作中引入一种随机过程，即**随机抽取过程**：
 
-对于每一个三角形计算一个 $[0,1]$ 区间均匀分布的随机数 $u_{t_i}$，如果三角形面积 $\large\mathcal{A}(t_i)>u_{t_i}S_0$，则保留该三角形，否则丢弃。三角形是否保留的概率分布为
+对于每一个三角形计算一个 $[0,1]$ 区间均匀分布的随机数 $u_{t_i}$，如果三角形面积 $\large\mathcal{A}(t_i)>u_{t_i}S_0$，则保留该三角形，否则丢弃。三角形保留的概率分布为
 
 $$
 \forall\space t_i\in \mathcal{L}, \quad P(t_i\in \mathcal{L^*})=\frac{\mathcal{A}(t_i)}{S_0}
@@ -41,14 +41,14 @@ $$
 
 ##### 基于随机提取过程的三角形多尺度划分
 
-将场景中三角形划分为 $(\mathcal{L}^0,...,\mathcal{L}^N)$ 共个 $N+1$ 子集，子集索引由 $0$ 到 $N$ 递增，影响距离递减（即尺度递减），子集包含的三角形数量递增。为了实现这样的划分，引入 $N+1$ 长度的递增序列 $\{S_0<...<S_N\}$。扩展随机提取过程到多尺度划分过程，三角形 $\large t_i$ 划分为子集 $\large \mathcal{L}^k$ 的概率为
+将场景中三角形划分为 $(\mathcal{L}^0,...,\mathcal{L}^N)$ 共 $N+1$ 个子集，子集索引由 $0$ 到 $N$ 递增，影响距离递减（即尺度递减），子集包含的三角形数量递增。为了实现这样的划分，引入 $N+1$ 长度的递增序列 $\{S_0<...<S_N\}$。扩展随机提取过程到多尺度划分过程，三角形 $\large t_i$ 划分为子集 $\large \mathcal{L}^k$ 的概率为
 
 $$
 \forall k\in [0...N],\quad P(t_i\in \mathcal{L}^k)=\frac{\mathcal{A}(t_i)}{S_k} \tag{1}\label{partition probability}
 $$
 在多尺度划分过程中，divergent 三角形的定义更改为**面积大于 $S_N$ 的三角形**。
 
-实际划分算法又有进一步的改动，引入 $\large\forall k\in [0...N],\quad \tilde{S}_k=\frac{1}{\sum^k_{j=0}}$ ， 算法伪代码如下
+实际划分算法又有进一步的改动，引入 $\large\forall k\in [0...N],\quad \tilde{S}_k=\frac{1}{\sum^k_{j=0}\frac{1}{S_j}}$ ， 算法伪代码如下
 
 <img src=".\Forward Light Cuts A Scalable Approach to Real-Time Global Illumination.assets\image-20210715182946556.png" alt="image-20210715182946556" style="zoom:67%;" />
 
@@ -74,12 +74,12 @@ $$
 
 > `对近似的个人理解见`：[附录 2. 着色方程积分近似为求和的理解](#附录2)
 
-VPL diffuse 反射直接光照表示为下面的 VPL 出射 radiance：
+VPL 对直接光照的 diffuse 反射表示为下面的 VPL 出射 radiance：
 
 $$
 L(t_i,\bar{y_ix})=\rho_iE(t_i)\frac{3}{2\pi}<\vec{n_i},\bar{y_ix}>^+
 $$
-其中 $\large E_i$ 是直接到达三角形 $\large t_i$ 的直接 irradiance，由于 $\large <\vec{n_i},\bar{y_ix}>^+$ 可知上式并非 perfectly lambertian (一种简单的漫反射：光线被均匀的反射到表面上方的半球)，而只会在几何法线方向发生完美反射。$\large \frac{3}{2\pi}$ *用来保证能量守恒*。
+其中 $\large E_i$ 是直接到达三角形 $\large t_i$ 的直接 irradiance，由于 $\large <\vec{n_i},\bar{y_ix}>^+$ 可知上式并非 perfectly Lambertian (一种简单的漫反射：光线被均匀的反射到表面上方的半球)，而只会在几何法线方向发生完美反射。$\large \frac{3}{2\pi}$ *用来保证能量守恒*。
 
 >  将 $\large L(t_i,\bar{y_ix})$ 代入 $\large H(t_i,x,\vec{n_x})$ 中有
 >

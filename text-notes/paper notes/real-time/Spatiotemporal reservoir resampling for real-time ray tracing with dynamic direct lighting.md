@@ -45,18 +45,18 @@ $$
 
 由 $\eqref{MIS MC}$ 可以看出，MIS 是对着色项的线性组合的采样，而另一种可选的采样策略是对其中一些项的乘积进行近似成比例地采样，这就是 RIS 实现的策略。RIS 从 source PDF $p$ 中生成 $M\geq 1$ 个候选样本 $\boldsymbol{x}={x_1,\cdots,x_M}$，$p$ 选择次佳但易于采样地分布，如 $p \propto L_e $。然后从这个候选池中使用以下离散分布概率进行随机选取 $z\in\{1,\cdots,M\}$，
 $$
-p(z\mid \boldsymbol{x})=\frac{\textup{w}(x_z)}{\sum^M_{i=1}\textup{w}(x_i)} \quad with \space\space \textup{w}(x)=\frac{\hat{p}(x)}{p(x)} \tag{5}\label{discrete PDF}
+p(z\mid \boldsymbol{x})=\frac{\mathrm{w}(x_z)}{\sum^M_{i=1}\mathrm{w}(x_i)} \quad with \quad \mathrm{w}(x)=\frac{\hat{p}(x)}{p(x)} \tag{5}\label{discrete PDF}
 $$
 其中，$p(x)$ 为易于采样的 source PDF；$\hat{p}(x)$ 为期望得到的 target PDF，例如无法直接采样的分布 $\hat{p}\propto \rho\cdot L_e \cdot G$。对于 **1-sample RIS** 估计量，因此有 $y\equiv x_z$，有
 $$
-L\approx \langle L \rangle^{1,M}_{RIS} = \frac{f(y)}{\hat{p}(y)}\cdot\left(\frac{1}{M}\sum\limits^M_{j=1}\textup{w}(x_j)\right) \tag{6} \label{1-sample RIS}
+L\approx \langle L \rangle^{1,M}_{RIS} = \frac{f(y)}{\hat{p}(y)}\cdot\left(\frac{1}{M}\sum\limits^M_{j=1}\mathrm{w}(x_j)\right) \tag{6} \label{1-sample RIS}
 $$
 
 > 对 $\eqref{1-sample RIS}$ 的理解：RIS 一次采样相当于得到一个 target PDF $\hat{p}$ 的样本 $y$，这个分布是可以采用多项乘积的形式。回顾重要性采样 IS，要使得被积函数对应的估计量 $\langle L\rangle$ 无偏，需要估计量的形式为 $f(y)/p_y(y)$，注意这里的 $p_y(y)$ 是 $y$ 的真实 PDF，而不是 target PDF。因此需要乘上括号部分，来近似 $y$ 的真实 PDF，但这种近似并不总是无偏的，会在某些情况下引入偏差，之后部分会有具体分析。
 
 多次执行 RIS，然后取平均，可以得到一个 N-sample RIS 估计量：
 $$
-L \approx\langle L\rangle^{M,N}_{RIS}=\frac{1}{N}\sum\limits^N_{i=1}\left(\frac{f(y_i)}{\hat{p}(y_i)}\cdot \left(\frac{1}{M}\sum^M_{j=1}\textup{w}(x_{ij})\right)\right) \tag{7} \label{N-sample RIS}
+L \approx\langle L\rangle^{M,N}_{RIS}=\frac{1}{N}\sum\limits^N_{i=1}\left(\frac{f(y_i)}{\hat{p}(y_i)}\cdot \left(\frac{1}{M}\sum^M_{j=1}\mathrm{w}(x_{ij})\right)\right) \tag{7} \label{N-sample RIS}
 $$
 在 $M,N\geq 1$ 并且 $f$ 非零时，$p,\hat{p}$ 都为正，RIS 则为无偏估计。理论上 $M$ 和 $N$ 存在与方差有关的最优比，但实际中，这个比值难以事先预知。本文中采用简单形式 $N=1$，即 1-sample RIS。有算法流程：
 
@@ -68,11 +68,11 @@ $$
 
    - 第 $i$ 次采样的随机样本为 $x_i$，放入候选样本列表 $\boldsymbol{x}$
 
-   - 计算样本 $x_i$ 的权重 $\textup{w}_i=\Large \frac{\hat{p}(x_i)}{p(x_i)}$，并放入权重列表 $\textup{W}$
+   - 计算样本 $x_i$ 的权重 $\mathrm{w}_i=\Large \frac{\hat{p}(x_i)}{p(x_i)}$，并放入权重列表 $\mathrm{W}$
 
-   - 累积权重和 $\text{w}_{sum}=\text{w}_{sum}+\text{w}_i$
+   - 累积权重和 $\mathrm{w}_{sum}=\mathrm{w}_{sum}+\mathrm{w}_i$
 
-4. 对候选样本权重进行归一化：$\textup{w}_i= \Large \frac{\textup{w}_i}{\text{w}_{sum}}$
+4. 对候选样本权重进行归一化：$\mathrm{w}_i= \Large \frac{\mathrm{w}_i}{\mathrm{w}_{sum}}$
 5. 将归一化权重作为候选样本的概率分布，采样候选样本列表得到最终选出的样本 $y=x_z$
 6. 返回选出的样本 $y=x_z$ 以及本次 RIS 的候选样本的权重累积和 $\textup{w}_{sum}$
 
@@ -84,13 +84,13 @@ $$
 
 <center>算法 1</center>
 
-$\eqref{1-sample RIS}$ 式的计算需要候选样本数量 $M$，这是算法输入，是已知的；$\textup{w}_{sum}$ ，算法输出；$\hat{p}(y)$，$y$ 是算法选出的样本，$\hat{p}$ 是预设 target PDF。
+$\eqref{1-sample RIS}$ 式的计算需要候选样本数量 $M$，这是算法输入，是已知的；$\mathrm{w}_{sum}$ ，算法输出；$\hat{p}(y)$，$y$ 是算法选出的样本，$\hat{p}$ 是预设 target PDF。
 
 ### 2. Weighted Reservoir Sampling(WRS)
 
 WRS 是一类从一个 stream $\{x_1,x_2,\cdots,x_M\}$ 中通过一遍操作来随机采样 $N$ 个元素的算法，该 stream 数据中每个元素 $x_i$ 都关联一个权重 $\textup{w}(x_i)$，$x_i$ 被选中的概率为
 $$
-P_i = \frac{\textup{w}(x_i)}{\sum^M_{j=1}\textup{w}(x_j)} \tag{8} \label{reservoir CDF}
+P_i = \frac{\mathrm{w}(x_i)}{\sum^M_{j=1}\mathrm{w}(x_j)} \tag{8} \label{reservoir CDF}
 $$
 Reservoir sampling 对每个元素只进行一次操作，仅需要 $N$ 个元素保留在内存中，并且 stream 的长度 $M$ 不必事先预知。Reservoir sampling 算法，分为有放回采样与无放回采样，由于蒙特卡洛积分积分的采样通常是相互独立的，因此本论文只考虑较为简单的有放回采样算法。
 
@@ -98,11 +98,11 @@ Reservoir sampling 按照 input stream 的次序来处理其中的元素，保�
 
 在处理了 m 个样本之后，样本 $x_i$ 在 reservoir 出现的概率为 $\textup{w}(x_i)/\sum^m_{j=1}\textup{w}(x_j)$。处理下一个新元素 $x_{m+1}$ 的更新规则为，使用下一个样本 $x_{m+1}$ 以以下概率随机替换 reservoir 中样本 $x_i$ ：
 $$
-\frac{\textup{w}(x_{m+1})}{\sum^{m+1}_{j=1}\textup{w}(x_j)}
+\frac{\mathrm{w}(x_{m+1})}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}
 $$
 因此任意之前的样本 $x_i$ 在 reservoir  内的概率(即已在 reservoir 中，且不会被下一个样本替换掉的概率)为：
 $$
-\frac{\textup{w}(x_i)}{\sum^m_{j=1}\textup{w}(x_j)}\left(1-\frac{\textup{w}(x_{m+1})}{\sum^{m+1}_{j=1}\textup{w}(x_j)}\right)=\frac{\textup{w}(x_i)}{\sum^{m+1}_{j=1}\text{w}(x_j)}
+\frac{\mathrm{w}(x_i)}{\sum^m_{j=1}\mathrm{w}(x_j)}\left(1-\frac{\mathrm{w}(x_{m+1})}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}\right)=\frac{\mathrm{w}(x_i)}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}
 $$
 观察 $\eqref{reservoir CDF}$ 中给出的 reservoir CDF 可知，在处理过一个新的元素后 reservoir 中元素的概率分布依然不变。WRS 算法如下：
 
@@ -206,7 +206,7 @@ Reservoir 样本累积了目前见过的所有样本信息，如果可以基于�
 
 $\eqref{1-sample RIS}$ 式的 1-sample RIS 可以重写为：
 $$
-\langle L\rangle^{1,M}_{RIS}=f(y)\cdot\left(\frac{1}{\hat{p}(y)}\frac{1}{M}\sum\limits^M_{j=1}\textup{w}(x_j)\right)=f(y)\textup{W}(\boldsymbol{x},z) \tag{9}\label{regroup 1-sample RIS}
+\langle L\rangle^{1,M}_{RIS}=f(y)\cdot\left(\frac{1}{\hat{p}(y)}\frac{1}{M}\sum\limits^M_{j=1}\mathrm{w}(x_j)\right)=f(y)\mathrm{W}(\boldsymbol{x},z) \tag{9}\label{regroup 1-sample RIS}
 $$
 其中 $\boldsymbol{x}=\{x_1,x_2,\cdots,x_M\}$，source PDF 的 $M$ 次独立采样；$\textup{W}$ 是 RIS 选出的样本 $y\equiv x_z$ 对应的权重，挑选过程是随机，可知是个随机变量。
 
@@ -234,7 +234,7 @@ p(z|\boldsymbol{x})=\frac{\textup{w}_z(x_z)}{\sum^M_{i=1}\textup{w}_i(x_i)} \qua
 $$
 候选样本与选取的样本索引 $z$ 的联合概率密度为
 $$
-p(\boldsymbol{x},z)=p(\boldsymbol{x})\cdot p(z\mid \boldsymbol{x})=\left(\prod\limits^M_{i=1}p_i(x_i)\right)\cdot \frac{\textup{w}_z(x_z)}{\sum^M_{i=1}\textup{w}_i(x_i)} \tag{11} \label{joint PDF}
+p(\boldsymbol{x},z)=p(\boldsymbol{x})\cdot p(z\mid \boldsymbol{x})=\left(\prod\limits^M_{i=1}p_i(x_i)\right)\cdot \frac{\mathrm{w}_z(x_z)}{\sum^M_{i=1}\mathrm{w}_i(x_i)} \tag{11} \label{joint PDF}
 $$
 对于给定样本值 $y$，可能有非常多的 $(\boldsymbol{x},z)$ 组合，对于采样出值为 $y$ 的样本 $x_i$ 要满足 $p_i(y)=p(\boldsymbol{x},i)>0$，因此所有可能情况有：
 $$
