@@ -1,0 +1,51 @@
+## Summary
+
+`Spatiotemporal Variance-Guided Filtering: Real-Time Reconstruction for Path-Traced Global Illumination` [[1]](#[1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Reference
+
+<a name="[1]">[1]</a> Christoph Schied, Anton Kaplanyan, Chris Wyman, Anjul Patney, Chakravarty R. Alla Chaitanya, John Burgess, Shiqiu Liu, Carsten Dachsbacher, Aaron Lefohn, and Marco Salvi. 2017. Spatiotemporal variance-guided filtering: real-time reconstruction for path-traced global illumination. In <i>Proceedings of High Performance Graphics</i> (<i>HPG '17</i>). Association for Computing Machinery, New York, NY, USA, Article 2, 1–12. DOI:https://doi.org/10.1145/3105762.3105770
