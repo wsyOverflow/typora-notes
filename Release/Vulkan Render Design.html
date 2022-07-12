@@ -1,0 +1,1108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.mac-os-11 { --title-bar-height:28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+thead, tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+svg { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; padding-bottom: 0px !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+  .typora-export-show-outline .typora-export-sidebar { display: none; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.reversefootnote { font-family: ui-monospace, sans-serif; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.6; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+.md-expand mark .md-meta { opacity: 0.3 !important; }
+mark .md-meta { color: rgb(0, 0, 0); }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-fences.md-fences-math { font-size: 1em; }
+.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
+.md-fences-advanced:not(.md-focus) { background: inherit; }
+.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
+.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
+.typora-export-show-outline #write { --webkit-flex:2; flex: 2 1 0%; }
+.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
+@media screen and (max-width: 1024px) {
+  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
+}
+@media screen and (max-width: 800px) {
+  .typora-export-sidebar { display: none; }
+}
+.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; }
+.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
+.outline-content strong { font-weight: 400; }
+.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
+.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
+.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
+.outline-expander:hover::before { content: ""; }
+.outline-h1 > .outline-item { padding-left: 0px; }
+.outline-h2 > .outline-item { padding-left: 1em; }
+.outline-h3 > .outline-item { padding-left: 2em; }
+.outline-h4 > .outline-item { padding-left: 3em; }
+.outline-h5 > .outline-item { padding-left: 4em; }
+.outline-h6 > .outline-item { padding-left: 5em; }
+.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
+.outline-label:hover { text-decoration: underline; }
+.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
+.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
+.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
+.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
+.outline-children { display: none; }
+.info-panel-tab-wrapper { display: none; }
+.outline-item-open > .outline-children { display: block; }
+.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
+.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
+.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
+.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
+.typora-export-collapse-outline .outline-children { display: none; }
+.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
+.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
+.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
+.md-inline-math-container mjx-container { zoom: 0.95; }
+
+
+.CodeMirror { height: auto; }
+.CodeMirror.cm-s-inner { background: inherit; }
+.CodeMirror-scroll { overflow: auto hidden; z-index: 3; }
+.CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler { background-color: rgb(255, 255, 255); }
+.CodeMirror-gutters { border-right: 1px solid rgb(221, 221, 221); background: inherit; white-space: nowrap; }
+.CodeMirror-linenumber { padding: 0px 3px 0px 5px; text-align: right; color: rgb(153, 153, 153); }
+.cm-s-inner .cm-keyword { color: rgb(119, 0, 136); }
+.cm-s-inner .cm-atom, .cm-s-inner.cm-atom { color: rgb(34, 17, 153); }
+.cm-s-inner .cm-number { color: rgb(17, 102, 68); }
+.cm-s-inner .cm-def { color: rgb(0, 0, 255); }
+.cm-s-inner .cm-variable { color: rgb(0, 0, 0); }
+.cm-s-inner .cm-variable-2 { color: rgb(0, 85, 170); }
+.cm-s-inner .cm-variable-3 { color: rgb(0, 136, 85); }
+.cm-s-inner .cm-string { color: rgb(170, 17, 17); }
+.cm-s-inner .cm-property { color: rgb(0, 0, 0); }
+.cm-s-inner .cm-operator { color: rgb(152, 26, 26); }
+.cm-s-inner .cm-comment, .cm-s-inner.cm-comment { color: rgb(170, 85, 0); }
+.cm-s-inner .cm-string-2 { color: rgb(255, 85, 0); }
+.cm-s-inner .cm-meta { color: rgb(85, 85, 85); }
+.cm-s-inner .cm-qualifier { color: rgb(85, 85, 85); }
+.cm-s-inner .cm-builtin { color: rgb(51, 0, 170); }
+.cm-s-inner .cm-bracket { color: rgb(153, 153, 119); }
+.cm-s-inner .cm-tag { color: rgb(17, 119, 0); }
+.cm-s-inner .cm-attribute { color: rgb(0, 0, 204); }
+.cm-s-inner .cm-header, .cm-s-inner.cm-header { color: rgb(0, 0, 255); }
+.cm-s-inner .cm-quote, .cm-s-inner.cm-quote { color: rgb(0, 153, 0); }
+.cm-s-inner .cm-hr, .cm-s-inner.cm-hr { color: rgb(153, 153, 153); }
+.cm-s-inner .cm-link, .cm-s-inner.cm-link { color: rgb(0, 0, 204); }
+.cm-negative { color: rgb(221, 68, 68); }
+.cm-positive { color: rgb(34, 153, 34); }
+.cm-header, .cm-strong { font-weight: 700; }
+.cm-del { text-decoration: line-through; }
+.cm-em { font-style: italic; }
+.cm-link { text-decoration: underline; }
+.cm-error { color: red; }
+.cm-invalidchar { color: red; }
+.cm-constant { color: rgb(38, 139, 210); }
+.cm-defined { color: rgb(181, 137, 0); }
+div.CodeMirror span.CodeMirror-matchingbracket { color: rgb(0, 255, 0); }
+div.CodeMirror span.CodeMirror-nonmatchingbracket { color: rgb(255, 34, 34); }
+.cm-s-inner .CodeMirror-activeline-background { background: inherit; }
+.CodeMirror { position: relative; overflow: hidden; }
+.CodeMirror-scroll { height: 100%; outline: 0px; position: relative; box-sizing: content-box; background: inherit; }
+.CodeMirror-sizer { position: relative; }
+.CodeMirror-gutter-filler, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-vscrollbar { position: absolute; z-index: 6; display: none; outline: 0px; }
+.CodeMirror-vscrollbar { right: 0px; top: 0px; overflow: hidden; }
+.CodeMirror-hscrollbar { bottom: 0px; left: 0px; overflow: auto hidden; }
+.CodeMirror-scrollbar-filler { right: 0px; bottom: 0px; }
+.CodeMirror-gutter-filler { left: 0px; bottom: 0px; }
+.CodeMirror-gutters { position: absolute; left: 0px; top: 0px; padding-bottom: 10px; z-index: 3; overflow-y: hidden; }
+.CodeMirror-gutter { white-space: normal; height: 100%; box-sizing: content-box; padding-bottom: 30px; margin-bottom: -32px; display: inline-block; }
+.CodeMirror-gutter-wrapper { position: absolute; z-index: 4; background: 0px 0px !important; border: none !important; }
+.CodeMirror-gutter-background { position: absolute; top: 0px; bottom: 0px; z-index: 4; }
+.CodeMirror-gutter-elt { position: absolute; cursor: default; z-index: 4; }
+.CodeMirror-lines { cursor: text; }
+.CodeMirror pre { border-radius: 0px; border-width: 0px; background: 0px 0px; font-family: inherit; font-size: inherit; margin: 0px; white-space: pre; overflow-wrap: normal; color: inherit; z-index: 2; position: relative; overflow: visible; }
+.CodeMirror-wrap pre { overflow-wrap: break-word; white-space: pre-wrap; word-break: normal; }
+.CodeMirror-code pre { border-right: 30px solid transparent; width: fit-content; }
+.CodeMirror-wrap .CodeMirror-code pre { border-right: none; width: auto; }
+.CodeMirror-linebackground { position: absolute; inset: 0px; z-index: 0; }
+.CodeMirror-linewidget { position: relative; z-index: 2; overflow: auto; }
+.CodeMirror-wrap .CodeMirror-scroll { overflow-x: hidden; }
+.CodeMirror-measure { position: absolute; width: 100%; height: 0px; overflow: hidden; visibility: hidden; }
+.CodeMirror-measure pre { position: static; }
+.CodeMirror div.CodeMirror-cursor { position: absolute; visibility: hidden; border-right: none; width: 0px; }
+.CodeMirror div.CodeMirror-cursor { visibility: hidden; }
+.CodeMirror-focused div.CodeMirror-cursor { visibility: inherit; }
+.cm-searching { background: rgba(255, 255, 0, 0.4); }
+span.cm-underlined { text-decoration: underline; }
+span.cm-strikethrough { text-decoration: line-through; }
+.cm-tw-syntaxerror { color: rgb(255, 255, 255); background-color: rgb(153, 0, 0); }
+.cm-tw-deleted { text-decoration: line-through; }
+.cm-tw-header5 { font-weight: 700; }
+.cm-tw-listitem:first-child { padding-left: 10px; }
+.cm-tw-box { border-style: solid; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: inherit; border-top-width: 0px !important; }
+.cm-tw-underline { text-decoration: underline; }
+@media print {
+  .CodeMirror div.CodeMirror-cursor { visibility: hidden; }
+}
+
+
+/**
+ * NexT for Typora
+ * Brought to you by Bill Chen || https://github.com/BillChen2K/typora-theme-next
+ *
+ * - Want code ligatures for JetBrains Mono?
+ * - Search for `font-variant-ligatures: none;` and comment that line.
+ *
+ * - Want to change the font size in exported pdf?
+ * - Change the variable `--export-font-size` below.
+ **/
+
+:root {
+	/*--bg-color: url(file:///C://Users//wangshengyang//AppData//Roaming//Typora/themes/bg_img/naturo1.jpg); /*background img*/
+    --base-font-size: 16px;
+    --highlight-color: rgb(0, 160, 160);
+    --text-color: #333;
+    --headings-color: #262a30;
+    --export-font-size: 13px;
+    --select-text-bg-color: #262a30;
+    --select-text-font-color: #eee;
+}
+
+* {
+    /* Disable ligatures */
+    font-variant-ligatures: none;
+}
+
+
+/* latin-ext */
+
+/* latin */
+
+/* latin-ext */
+
+/* latin */
+
+/* latin-ext */
+
+/* latin */
+
+/* latin-ext */
+
+/* latin */
+
+/* latin-ext */
+
+/* latin */
+
+/* latin-ext */
+
+/* latin */
+
+html,
+body,
+#write {
+    color: var(--text-color);
+    font-size: var(--base-font-size);
+    background: #fcfcfc;
+	/*background: url(file:///C://Users//wangshengyang//AppData//Roaming//Typora/themes/bg_img/4.png) no-repeat; /*background img setting*/
+    font-family: Overpass, "GlowSansSC", "Helvetica Neue", "pingfang sc", "microsoft yahei", sans-serif;
+    font-weight: 400;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+	background-size: 33%; /*background img setting*/
+	background-position: 100% -10%;
+	background-repeat: no-repeat
+    /* letter-spacing: -0.5px; */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--headings-color);
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 20px 0 15px
+}
+
+.CodeMirror pre {
+    font-family: 'JetBrains Mono';
+    font-size: 0.95em;
+    line-height: 1.65em;
+}
+
+
+#write {
+    max-width: 914px;
+    text-align: justify;
+}
+
+#write>h1:first-child {
+    margin-top: 1.75rem;
+}
+
+#write>h2:first-child {
+    margin-top: 1.5rem;
+}
+
+#write>h3:first-child {
+    margin-top: 1rem;
+}
+
+#write>h4:first-child {
+    margin-top: 0.5rem;
+}
+
+h1 {
+    font-size: 2.5em
+}
+
+h2 {
+    font-size: 1.75 em
+}
+
+h3 {
+    font-size: 1.45em
+}
+
+h4 {
+    font-size: 1.25em
+}
+
+h5 {
+    font-size: 1.1em
+}
+
+h6 {
+    font-size: 1em;
+    font-weight: bold
+}
+
+#write code {
+    color: var(--highlight-color);
+}
+
+p {
+    color: var(--text-color);
+    line-height: 1.7rem;
+    margin: 0 0 8px;
+}
+
+#write ul {
+    line-height: 1.75rem;
+    margin-block-start: 0.6em;
+    margin-block-end: 0.6em;
+}
+
+#write ol li {
+    line-height: 1.75rem;
+    margin-block-start: 0.6em;
+    margin-block-end: 0.6em;
+}
+
+u {
+    text-decoration: none;
+    border-bottom: 1px solid #999;
+}
+
+#write>h3.md-focus:before {
+    left: -1.875rem;
+    top: 0.5rem;
+    padding: 2px;
+}
+
+#write>h4.md-focus:before {
+    left: -1.875rem;
+    top: 0.3125rem;
+    padding: 2px;
+}
+
+#write>h5.md-focus:before {
+    left: -1.875rem;
+    top: 0.25rem;
+    padding: 2px;
+}
+
+#write>h6.md-focus:before {
+    left: -1.875rem;
+    top: .125rem;
+    padding: 2px;
+}
+
+@media screen and (max-width: 48em) {
+    blockquote {
+        margin-left: 1rem;
+        margin-right: 0;
+        padding: 0.5em;
+    }
+    /* .h1,
+    h1 {
+        font-size: 2.827rem;
+    }
+    .h2,
+    h2 {
+        font-size: 1.999rem;
+    }
+    .h3,
+    h3 {
+        font-size: 1.413rem;
+    }
+    .h4,
+    h4 {
+        font-size: 1.250rem;
+    }
+    .h5,
+    h5 {
+        font-size: 1.150rem;
+    }
+    .h6,
+    h6 {
+        font-size: 1rem;
+    } */
+}
+
+a .md-def-url {
+    color: #262a30;
+}
+
+a {
+    color: var(--highlight-color);
+    text-decoration: none;
+    font-weight: bold;
+    transition-duration: 0.5s;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 1em;
+    margin: 0 0 20px;
+    width: 100%;
+}
+
+table tr:nth-child(2n),
+thead {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: #f5f5f5
+}
+
+caption,
+td,
+th {
+    font-weight: 400;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle
+}
+
+table tr th {
+    border-bottom: 3px solid #ddd;
+    font-weight: 700;
+    padding-bottom: 10px;
+    background-color: var(--bg-color);
+}
+
+td,
+th {
+    border: 1px solid #ddd;
+}
+
+th {
+    font-weight: 700;
+    padding-bottom: 10px
+}
+
+td {
+    border-bottom-width: 1px
+}
+
+
+/* Inline Code */
+
+code,
+.md-fences {
+    background: #eee;
+    border-radius: 3px;
+    color: #555;
+    padding: 2px 4px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    font-family: 'JetBrains Mono';
+    font-size: 0.935em;
+}
+
+
+/* Code Blocks */
+
+.md-fences {
+    margin: 0 0 20px;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    padding: 0.4em 1em;
+    padding-top: 0.4em;
+}
+
+.task-list {
+    padding-left: 0;
+}
+
+.task-list-item {
+    padding-left: 2rem;
+}
+
+.task-list-item input {
+    top: 3px;
+}
+
+.task-list-item input {
+    outline: none;
+    margin-bottom: 0.5em;
+}
+
+.task-list-item input::before {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid gray;
+    background-color: #fdfdfd;
+    margin-left: -0.1rem;
+    margin-right: 0.1rem;
+    margin-top: -0.9rem;
+}
+
+.task-list-item input:checked::before {
+    padding-left: 0.125em;
+    content: '✔';
+    /*◘*/
+    font-size: 0.8125rem;
+    line-height: 0.9375rem;
+    margin-top: -0.9rem;
+}
+
+
+/* Chrome 29+ */
+
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .task-list-item input:before {
+        margin-top: -0.2rem;
+    }
+    .task-list-item input:checked:before,
+    .task-list-item input[checked]:before {
+        margin-top: -0.2rem;
+    }
+}
+
+blockquote {
+    border-left: 4px solid #ddd;
+    color: #666;
+    margin: 0;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 0 15px
+}
+
+blockquote p {
+    color: #666
+}
+
+blockquote cite::before {
+    content: '-';
+    padding: 0 5px
+}
+
+
+/* #write pre.md-meta-block {
+    min-height: 30px;
+    background: #f8f8f8;
+    padding: 1.5em;
+    font-weight: 300;
+    font-size: 1em;
+    padding-bottom: 1.5em;
+    padding-top: 3em;
+    margin-top: -1.5em;
+    color: #999;
+    border-left: 1000px #f8f8f8 solid;
+    margin-left: -1000px;
+    border-right: 1000px #f8f8f8 solid;
+    margin-right: -1000px;
+    margin-bottom: 2em;
+    font-size: 0.8em;
+    line-height: 1.5em;
+    font-family: 'JetBrains Mono';
+} */
+
+#write pre.md-meta-block {
+    padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f1f1f1;
+    border: 0;
+    border-radius: 3px;
+    color: hsl(0, 0%, 53%);
+    margin-top: 0 !important;
+    margin-bottom: 2em;
+    font-size: 0.8em;
+    line-height: 1.5em;
+    font-family: 'JetBrains Mono';
+	background: rgba(0, 0, 0, 0.005); /*background img setting*/
+}
+
+.MathJax_Display {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    margin-bottom: 0;
+}
+
+p.mathjax-block,
+.mathjax-block {
+    padding-bottom: 0;
+}
+
+.mathjax-block>.code-tooltip {
+    bottom: 5px;
+    box-shadow: none;
+}
+
+.md-image>.md-meta {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.md-image>img {
+    margin-top: 2px;
+}
+
+.md-image>.md-meta:first-of-type:before {
+    padding-left: 4px;
+}
+
+#typora-source {
+    color: #555;
+}
+
+
+/** ui for windows **/
+
+#md-searchpanel {
+    border-bottom: 1px solid #ccc;
+}
+
+#md-searchpanel .btn {
+    border: 1px solid #ccc;
+}
+
+#md-notification:before {
+    top: 14px;
+}
+
+#md-notification {
+    background: #eee;
+}
+
+.megamenu-menu-panel .btn {
+    border: 1px solid #ccc;
+}
+
+#write>h3.md-focus:before {
+    left: -1.5625rem;
+    top: .375rem;
+}
+
+#write>h4.md-focus:before {
+    left: -1.5625rem;
+    top: .285714286rem;
+}
+
+#write>h5.md-focus:before {
+    left: -1.5625rem;
+    top: .285714286rem;
+}
+
+#write>h6.md-focus:before {
+    left: -1.5625rem;
+    top: .285714286rem;
+}
+
+.md-image>.md-meta {
+    border-radius: 3px;
+    padding: 2px 0 0 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: inherit;
+}
+
+.md-toc {
+    margin-top: 20px;
+    padding-bottom: 5px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #efefef;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#md-notification:before {
+    top: 10px;
+}
+
+
+/** focus mode */
+
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state {
+    visibility: visible;
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+.html-for-mac .context-menu {
+    --item-hover-bg-color: #E6F0FE;
+}
+
+.file-tree-node {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.file-node-title {
+    padding-top: 2px;
+}
+
+.outline-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+/* 
+.modal-footer .btn-default,
+.modal-footer .btn-primary {
+    border: 2px solid #222;
+}
+
+
+
+#md-searchpanel .btn:not(.close-btn):hover {
+    background: #fff;
+    border-color: #222;
+    color: #222;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+#md-searchpanel .btn:not(.close-btn) {
+    background: #222;
+    border-color: #222;
+    color: #fff;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    transition-duration: .2s;
+}
+
+.searchpanel-search-option-btn {
+    border-radius: 0px;
+    border: 1px solid #222;
+} */
+
+/* Search panel & UI */
+
+#md-searchpanel .btn {
+    border: none;
+}
+
+#md-searchpanel input {
+    box-shadow: none;
+}
+
+.searchpanel-search-option-btn {
+    border-color: #aaa;
+    border-radius: 0;
+}
+
+.modal-dialog .btn {
+    background: #222;
+    border-width: 2px;
+    border-color: #222;
+    border-radius: 0;
+    color: #fff;
+    display: inline-block;
+    font-size: .875em;
+    line-height: 2rem;
+    padding: 0 20px;
+    margin: 5px;
+    text-decoration: none;
+    transition-delay: 0s;
+    transition-duration: .2s;
+    transition-timing-function: ease-in-out
+}
+
+.modal-dialog .btn:hover {
+    background: #eee;
+    border-color: #222;
+    color: #222;
+}
+
+
+/* Printing issue */
+
+.typora-export * {
+    -webkit-print-color-adjust: exact;
+}
+
+.typora-export p {
+    font-size: var(--export-font-size) !important;
+}
+
+.typora-export li {
+    font-size: var(--export-font-size);
+    line-height: 2rem;
+}
+
+.typora-export #write {
+    font-size: var(--export-font-size) !important;
+}
+
+table,
+pre {
+    page-break-inside: avoid;
+}
+
+pre {
+    word-wrap: break-word;
+}
+
+hr {
+    background-image: repeating-linear-gradient(-45deg, #ddd, #ddd 4px, transparent 4px, transparent 8px);
+    border: 0;
+    height: 3px;
+    margin: 40px 0
+}
+
+
+mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > g > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+  stroke-width: 3;
+}
+
+g[data-mml-node="xypic"] path {
+  stroke-width: inherit;
+}
+
+.MathJax g[data-mml-node="xypic"] path {
+  stroke-width: inherit;
+}
+mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
+							stroke-width: 0;
+						}
+</style><title>Vulkan Render Design</title>
+</head>
+<body class='typora-export os-windows typora-export-show-outline typora-export-collapse-outline'><div class='typora-export-content'>
+<div class="typora-export-sidebar"><div class="outline-content"><li class="outline-item-wrapper outline-h3 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#summary">Summary</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#vulkan-管线管理策略">Vulkan 管线管理策略</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#graphics-pso-的创建">Graphics PSO 的创建</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h4 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#1-vulkan-graphics-pipeline-介绍">1. Vulkan Graphics Pipeline 介绍</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h5 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#11-vulkan-render-pass">1.1 Vulkan Render Pass</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h5 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#12-vulkan-pipeline-layout">1.2 Vulkan Pipeline Layout</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h4 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#2-从上层到渲染层的管线创建">2. 从上层到渲染层的管线创建</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#shader-的管理与配置">Shader 的管理与配置</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h5 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#1-shader-源码编译与加载">1. Shader 源码编译与加载</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h5 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#2-shader-输入参数描述">2. Shader 输入参数描述</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h3 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#todo">TODO</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3 outline-item-single"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#reference">Reference</a></div><ul class="outline-children"></ul></li></div></div><div id='write'  class=''><h3 id='summary'><span>Summary</span></h3><p><span>本文介绍了本渲染器的 Vulkan 管线管理策略以及 Shader 管理策略。</span></p><h3 id='vulkan-管线管理策略'><span>Vulkan 管线管理策略</span></h3><p><span>Vulkan 包含三种管线 graphics、compute、raytracing，管线只是一种状态描述，描述了整个工作流中涉及的状态。人们经常提 OpenGL 是个状态机，OpenGL 的状态是由根据使用者的 API 调用来进行切换的，属于 high-level 的 API 设计。而Vulkan 使用 </span><strong><span>PSO(pipeline state object)</span></strong><span> 来描述管线状态，类型为 </span><code>VkPipeline</code><span>，这个类型的对象需要用户自己创建。</span></p><p><span>PSO 只是描述管线的各种状态，状态相同的管线可以使用同一个 PSO，不相容的状态则需要创建新的 PSO。因此对于 PSO 的管理采用将当前状态进行 hash 处理，如果存在当前状态 hash 的 PSO 则直接使用，否则创建新的 PSO 并记录到 unordered_map 中。这部分工作由类 </span><code>VulkanPipelineStateManager</code><span> 完成，目前的 hash 算法只是简单的移位与异或，留待之后更改。</span></p><p><span>创建 PSO 的 API 有三个，</span><a href='https://www.khronos.org/registry/vulkan/specs/1.3-extensions/man/html/vkCreateGraphicsPipelines.html'><code>vkCreateGraphicsPipelines</code></a><span> 创建 graphics PSO，</span><a href='https://www.khronos.org/registry/vulkan/specs/1.3-extensions/man/html/vkCreateComputePipelines.html'><code>vkCreateComputePipelines</code></a><span> 创建 compute PSO， </span><a href='https://www.khronos.org/registry/vulkan/specs/1.3-extensions/man/html/vkCreateRayTracingPipelinesKHR.html'><code>vkCreateRayTracingPipelinesKHR</code></a><span> 创建 raytracing PSO。创建 PSO 需要传入描述管线状态的结构体，管线状态的 hash 也主要对这些结构体中的字段进行。另一个 cache 参数，是允许用户将执行过程中创建的 PSO 保存到文件，然后下次启动加载到 cache 参数中，Vulkan 可以通过 cache 来减少创建过程中需要的底层开销，可以提高运行时帧数的稳定性。</span></p><p><span>对于 PSO 的封装有类 </span><code>VulkanPipeline</code><span> 及其三个子类 </span><code>VulkanGraphicsPipelineState</code><span>、</span><code>VulkanComputePipeline</code><span> 以及 </span><code>VulkanRayTracingPipeline</code><span>。下面以 graphics PSO 为例，介绍管线的创建流程。</span></p><h3 id='graphics-pso-的创建'><span>Graphics PSO 的创建</span></h3><h4 id='1-vulkan-graphics-pipeline-介绍'><span>1. Vulkan Graphics Pipeline 介绍</span></h4><p><span>创建 Vulkan Graphics PSO 的描述封装在结构体 </span><a href='https://www.khronos.org/registry/vulkan/specs/1.3-extensions/man/html/VkGraphicsPipelineCreateInfo.html'><code>VkGraphicsPipelineCreateInfo</code></a><span> 中，下面简要介绍它的成员：</span></p><ul><li><code>VkPipelineShaderStageCreateInfo*</code><span> ：管线使用的 shader 信息数组，每个元素包含使用的 shader 对象(VkShaderModule)、入口函数、shader 阶段(vertex/fragment ...)等。</span></li><li><code>VkPipelineVertexInputStateCreateInfo*</code><span>：每个元素描述顶点包含的输入属性(vertex shader)，即 location、binding、数据格式以及相对于顶点起始位置的偏移量。</span></li><li><code>VkPipelineInputAssemblyStateCreateInfo</code><span>：描述图元数据的拓扑结构(VkPrimitiveTopology)，如     </span><br/><span>POINT_LIST、TRIANGLE_LIST 等。</span></li><li><code>VkPipelineTessellationStateCreateInfo</code><span>：曲面细分阶段的配置参数，例如控制点数量</span></li><li><code>VkPipelineViewportStateCreateInfo</code><span>：用来描述当前渲染的 viewport 和 scissor 的区域，视口和裁剪可能变化较频繁，可以设置为 dynamic state，创建管线时不设置，在渲染前使用 command 动态设置。</span></li><li><code>VkPipelineRasterizationStateCreateInfo</code><span>：描述光栅化阶段的配置参数，几何绘制模式(填充/线框)，正面的顶点环绕方向，剔除面(正面剔除还是背面剔除)。是否开启 depth bias，对 depth buffer 中的深度加上一个偏移量，可以在避免自遮挡时使用</span></li><li><code>VkPipelineMultisampleStateCreateInfo</code><span>：描述光栅化阶段的采样数，1 表示无超采样。</span></li><li><code>VkPipelineDepthStencilStateCreateInfo</code><span>：描述是否开启深度测试、模板测试，以及深度测试的操作、模板测试的操作。</span></li><li><code>VkPipelineColorBlendStateCreateInfo</code><span>：描述 frame buffer 中每个 render target 的 blend 操作，包含 blend 参数、blend 计算方式等。</span></li><li><code>VkPipelineDynamicStateCreateInfo</code><span>：描述管线状态中哪些是可以使用 command 指定的动态状态，其他则是创建管线时就确定的。</span></li><li><code>VkPipelineLayout</code><span>：包含管线中着色器的输入资源描述</span></li><li><code>VkRenderPass</code><span>：管线所使用的 render pass，包含了 render pass 的 render target 的描述。</span></li></ul><h5 id='11-vulkan-render-pass'><span>1.1 Vulkan Render Pass</span></h5><p><span>Vulkan Render Pass 也是一种描述，因此同样使用 hash 方式进行自动创建，主要包含三部分：</span></p><ul><li><span>描述其使用到的所有 attachment 的描述 </span><code>VkAttachmentDescription</code><span>，一个 attachment 即为一个 image view，用于访问 vulkan texture。进入 renderpass 之前、renderpass 之内、renderpass 结束时的 image layout；加载与存储时的操作；attachment 格式，采样数。</span></li><li><span>描述其内部的 subpass，并且至少包含一个 subpass。每个 subpass 描述包含其 color/resolve/depth attachment 的引用描述，即 framebuffer 中 attachment index、image layout</span></li><li><span>subpass 之间的依赖</span></li></ul><p><span>Vulkan Render Pass 特殊之处在于其是由 subpass 来描述内部多个子阶段的，绘制指令也会被记录在一个当前激活的 subpass 中。subpass 的设计是为了能够高效利用某些 tile-based 架构的移动端 GPU，即 fragment shader 的执行是以 tile 为单位的，因此之后的 subpass 可以直接读到上一个 subpass 写入 attachment 的数据，而不需要等到整个 render pass 执行完。</span></p><p><a href='#[1]'><span>[1]</span></a><span> 以由两个 pass 组成的 deferred shading 为例，第一个 pass 为了绘制 G-Buffer，第二个 pass 基于 G-Buffer 进行光照计算，得到最终绘制结果。可以设置 render pass 包含两个 subpass，第一个 subpass 绘制 G-Buffer，第二个 subpass 将第一个 subpass 的 G-Buffer 作为 </span><code>input attachment</code><span>，执行光照计算。流程如下述伪代码：</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.28462px; left: 3.99231px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">cmdBeginRenderPass</span></span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-def">cmdBindPipeline</span>(<span class="cm-variable">pipeline0</span>)</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>... <span class="cm-comment">// bind vertex/index buffer or descriptor set of shader resource</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cmdDraw</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cmdNextSubpass</span></span></pre><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-def">cmdBindPipeline</span>(<span class="cm-variable">pipeline1</span>)</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span>... <span class="cm-comment">// bind vertex/index buffer or descriptor set of shader resource</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">cmdDraw</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">cmdEndRenderPass</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 208px;"></div><div class="CodeMirror-gutters" style="display: none; height: 208px;"></div></div></div></pre><p><span>注意两个 subpass 使用的是两个 PSO，因为 geometry pass 的 shader 与 deferred shading 的 shader，以及其 shader 输入肯定不同。在第二个 subpass 使用到的 pipeline1 的 shader 则可以使用如下方式来声明 input attachment，</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="glsl"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="glsl"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.28462px; left: 3.99231px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-word">layout</span> <span class="cm-bracket">(</span><span class="cm-word">input_attachment_index</span> <span class="cm-operator">=</span> <span class="cm-number">0</span><span class="cm-bracket">,</span> <span class="cm-word">set</span> <span class="cm-operator">=</span> <span class="cm-number">0</span><span class="cm-bracket">,</span> <span class="cm-word">binding</span> <span class="cm-operator">=</span> <span class="cm-number">0</span><span class="cm-bracket">)</span> <span class="cm-keyword">uniform</span> <span class="cm-word">subpassInput</span> <span class="cm-word">inputColor</span><span class="cm-bracket">;</span></span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-word">layout</span> <span class="cm-bracket">(</span><span class="cm-word">input_attachment_index</span> <span class="cm-operator">=</span> <span class="cm-number">1</span><span class="cm-bracket">,</span> <span class="cm-word">set</span> <span class="cm-operator">=</span> <span class="cm-number">1</span><span class="cm-bracket">,</span> <span class="cm-word">binding</span> <span class="cm-operator">=</span> <span class="cm-number">1</span><span class="cm-bracket">)</span> <span class="cm-keyword">uniform</span> <span class="cm-word">subpassInput</span> <span class="cm-word">inputDepth</span><span class="cm-bracket">;</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 45px;"></div><div class="CodeMirror-gutters" style="display: none; height: 45px;"></div></div></div></pre><p><code>subpassLoad(inputColor)</code><span> 则会读取上个 subpass 在 inputColor 同样区域写入的数据。</span></p><h5 id='12-vulkan-pipeline-layout'><span>1.2 Vulkan Pipeline Layout</span></h5><p><span>shader 中的输入参数需要对应描述符 </span><code>VkDescriptorSetLayout</code><span> 对其描述，而 vulkan pipeline layout 则包含了整个管线的所有 shader 输入参数的描述符。上述 set=0、set=1 则分别表示了索引 0、1 的 VkDescriptorSetLayout 对象，相当于整个管线的描述符分到了两个描述符堆上。一个输入资源的描述符 </span><code>VkDescriptorSetLayoutBinding</code><span>，包含了 binding、资源类型(如上例中的 </span><code>VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT</code><span>)、当为数组时的数组长度以及被哪些 shader 阶段使用。</span></p><p><span>Vulkan Pipeline Layout 只是对管线 shader 输入的描述，相当于函数签名中形参，真正使用的数据资源，如 sampler、texture、buffer 等，需要使用 command 在 draw call 之前指定。因此 Vulkan Pipeline Layout 同样使用 hash 自动创建。</span></p><p><span>特别注意，描述符堆是从 descriptorPool 中使用 VkDescriptorSetLayout 创建得到的，每个描述符堆 </span><code>VkDescriptorSet</code><span> 同时只能由一个 command buffer 使用，因此描述符堆的申请使用与停止使用应该由 command buffer 完成。类 </span><code>VulkanDescriptorPoolManager</code><span> 维护已经创建的描述符堆以及其使用状态，command buffer 在更新描述符资源之前请求使用，如果没有可用的 descriptorSet 则新创建。command buffer 具有自己执行是否完成的 fence，类 </span><code>VulkanCommandBufferManager</code><span> 更新 command buffer 状态时，如果 command buffer 中的指令已经完成，则归还其使用的描述符堆。</span></p><h4 id='2-从上层到渲染层的管线创建'><span>2. 从上层到渲染层的管线创建</span></h4><p><span>本渲染器的最初设计是面向多平台的，设置了平台无关层，只是目前只有 Vulkan 的渲染层，因此平台无关层更偏向于 Vulkan。下面介绍与管线创建相关的平台无关层的类。</span></p><ul><li><code>GPIRenderPassInfo</code><span>：对标 vulkan render pass 的描述，但不仅仅包含了对 render pass 的描述，还包含 render pass 中使用到的 render target ，因此 render pass 对应的 frame buffer 的创建所需参数也是从该类型中获取。</span></li><li><code>GPIGfxPipelineStateInitializer</code><span>：对标 Graphics PSO 的配置参数。</span></li></ul><p><span>抽象类 </span><code>GraphicsBridge</code><span> 定义了一系列到渲染层的接口，不同的平台实现其接口。例如，设置 render pass 以及管线的接口 </span><code>GPIBeginRenderPass</code><span> 、</span><code>GPISetGfxPipelineState</code><span>。下面是管线创建的上层逻辑的伪代码：</span></p><pre class="md-fences md-end-block ty-contain-cm modeLoaded" spellcheck="false" lang="c++"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="c++"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9.28462px; left: 3.99231px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation"><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: 0px; width: 0px;"></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">GPIRenderPassInfo</span> <span class="cm-variable">basePassInfo</span>;</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-comment">// ... // config basePass info</span></span></pre><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">gGfxBridge</span><span class="cm-operator">-&gt;</span><span class="cm-variable">GPIBeginRenderPass</span>(<span class="cm-variable">basePassInfo</span>);</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">{</span></pre><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">GPIGfxPipelineStateInitializer</span> <span class="cm-variable">PSOInitializer</span>;</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-comment">// ... // config PSOInitializer</span></span></pre><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">gGfxBridge</span><span class="cm-operator">-&gt;</span><span class="cm-variable">GPISetGfxPipelineState</span>(<span class="cm-variable">PSOInitializer</span>, <span class="cm-variable">basePassInfo</span>);</span></pre></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-comment">// ... // config the resources of descriptor set</span></span></pre><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">gGfxBridge</span><span class="cm-operator">-&gt;</span><span class="cm-variable">GPIDrawPrimitive</span>();</span></pre></div><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;">}</span></pre></div><div class="" style="position: relative;"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">gGfxBridge</span><span class="cm-operator">-&gt;</span><span class="cm-variable">GPIEndRenderPass</span>();</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 0px; width: 1px; border-bottom: 0px solid transparent; top: 248px;"></div><div class="CodeMirror-gutters" style="display: none; height: 248px;"></div></div></div></pre><p><code>GPIBeginRenderPass</code><span> 会根据参数 basePassInfo 来生成 vulkan render pass 的配置，以及 frame buffer 的资源参数，通过 hash 的方式查找是否存在对应配置的 render pass 与 frame buffer，不存在则创建。同理 </span><code>GPISetGfxPipelineState</code><span> 根据 PSOInitializer 与 basePassInfo 参数以 hash 方式查找 PSO，并绑定到当前 command buffer。</span></p><p><span>同时 </span><code>GPIBeginRenderPass</code><span> 还做了一些开始管线前的准备工作，比如向 </span><code>VulkanCommandBufferManager</code><span> 申请 command buffer，以及将 render pass 需要的 render target 调整到其所指定的输入 layout 等。</span></p><h3 id='shader-的管理与配置'><span>Shader 的管理与配置</span></h3><p><span>上述管线创建过程中，还需要 shader 的配置。</span><code>UltraShader</code><span> 基类定义了 shader 相关描述，如 shader 源码文件路径、shader 编译相关配置、shader 输入参数描述等。不同 shader 继承自此基类，声明自己的参数，其中输入参数会被用于管线创建 </span><code>VkPipelineLayout</code><span> 资源描述。而编译相关配置则包括一些全局编译配置，如平台、优化参数等，以及一些宏定义，用以开启或关闭某些代码。</span></p><h5 id='1-shader-源码编译与加载'><span>1. Shader 源码编译与加载</span></h5><p><span>本渲染器的 shader 编译与加载由类 </span><code>ShaderCompilerManager</code><span> 完成。该类基于 shaderc，但为了在 renderdoc 能够源码级调试 shader，在 debug 时使用 glslangValidator 编译。目前编译触发条件，有两种：</span></p><ul><li><span>加载过程中，shader 文件及其 include 文件的时间戳要比记录文件中的更新。或者 shader 的一些配置发生改变。</span></li><li><span>运行过程中，shader 的一些配置(如宏定义)发生改变。[TODO] 运行过程中文件的改动主动触发编译</span></li></ul><p><span>Shader 文件的后缀分为作为头文件的 .glsl 以及表示不同阶段的源码文件如 .ver、.frag、.comp 等。编译过程中会记录源码文件以及其 include 文件的时间戳，用以辨别是否有更改。同时将 shader 编译配置进行 hash，作为编译输出文件的文件名一部分，用以辨别当前 shader 编译配置是否已经编译过。这些信息都会记录在 &quot;intermediate/Shaders/ ShaderFileCache.json&quot; 文件中，该文件在启动时加载。</span></p><p><span>由于 include 文件会有多级 include，因此只有加载了 shader 源码将所有层级的 include 文件进行时间戳比对才能确定是否需要编译此 shader，因此这一模式只能在加载过程中应用。在运行时需要采用主动触发编译，目前主动触发编译只有实现了 shader 的编译配置发生改变，文件发生改变主动触发编译留待之后实现。</span></p><h5 id='2-shader-输入参数描述'><span>2. Shader 输入参数描述</span></h5><p><span>模板类 </span><code>TShaderResourceParameter</code><span> 可以容纳各种类型的 shader 参数描述，同时可以绑定实际的资源。但这些目前都需要大量的手写代码完成，手动与 shader 代码里的声明对齐，手动绑定资源。更合理的做法应该是，</span></p><ul><li><span>实现 C++ 反射宏，使用宏能够更快速声明 shader 参数描述</span></li><li><span>shader 编译过程应该利用 shader 反射生成包含输入资源描述的头信息。shader 参数在 C++ 中使用相同的名称，使用头信息中的名称进行自动配置参数描述(layout信息等)，并进行验证。</span></li></ul><p><span>这些留待之后实现。</span></p><h3 id='todo'><span>TODO</span></h3><p><span>由于时间有限，有很多搁置的策略未实现。</span></p><ul><li><span>描述符堆目前未实现同时多个堆策略</span></li><li><span>shader 编译流程生成 layout 头信息，使用 C++ 反射宏进行绑定</span></li><li><span>多线程渲染</span></li></ul><h3 id='reference'><span>Reference</span></h3><p><a name="[1]"><span>[1]</span></a><span> </span><a href='https://www.saschawillems.de/blog/2018/07/19/vulkan-input-attachments-and-sub-passes/' target='_blank' class='url'>https://www.saschawillems.de/blog/2018/07/19/vulkan-input-attachments-and-sub-passes/</a></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></div></div>
+
+<script>(function(){var e=document.body.parentElement,t=[],n=null,i=document.body.classList.contains("typora-export-collapse-outline"),r=function(e,t,n){document.addEventListener(e,function(e){if(!e.defaultPrevented)for(var i=e.target;i&&i!=this;i=i.parentNode)if(i.matches(t)){!1===n.call(i,e)&&(e.preventDefault(),e.stopPropagation());break}},!1)};function o(){return e.scrollTop}r("click",".outline-expander",function(e){var t=this.closest(".outline-item-wrapper").classList;return t.contains("outline-item-open")?t.remove("outline-item-open"):t.add("outline-item-open"),d(),!1}),r("click",".outline-item",function(e){var t=this.querySelector(".outline-label");if(location.hash="#"+t.getAttribute("href"),i){var n=this.closest(".outline-item-wrapper").classList;n.contains("outline-item-open")||n.add("outline-item-open"),c(),n.add("outline-item-active")}});var a,s,l=function(){var e=o();n=null;for(var i=0;i<t.length&&t[i][1]-e<60;i++)n=t[i]},c=function(){document.querySelectorAll(".outline-item-active").forEach(e=>e.classList.remove("outline-item-active")),document.querySelectorAll(".outline-item-single.outline-item-open").forEach(e=>e.classList.remove("outline-item-open"))},d=function(){if(n){c();var e=document.querySelector('.outline-label[href="#'+(CSS.escape?CSS.escape(n[0]):n[0])+'"]');if(e)if(i){var t=e.closest(".outline-item-open>ul>.outline-item-wrapper");if(t)t.classList.add("outline-item-active");else{for(var r=(e=e.closest(".outline-item-wrapper")).parentElement.closest(".outline-item-wrapper");r;)r=(e=r).parentElement.closest(".outline-item-wrapper");e.classList.add("outline-item-active")}}else e.closest(".outline-item-wrapper").classList.add("outline-item-active")}};window.addEventListener("scroll",function(e){a&&clearTimeout(a),a=setTimeout(function(){l(),d()},300)});var u=function(){s=setTimeout(function(){!function(){t=[];var e=o();document.querySelector("#write").querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(n=>{var i=n.getAttribute("id");t.push([i,e+n.getBoundingClientRect().y])})}(),l(),d()},300)};window.addEventListener("resize",function(e){s&&clearTimeout(s),u()}),u()})();</script></body>
+</html>
