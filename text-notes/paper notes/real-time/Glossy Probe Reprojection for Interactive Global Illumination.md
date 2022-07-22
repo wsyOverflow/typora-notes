@@ -22,7 +22,7 @@ Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 p
 
 预计算过程中，为每个 Probe 生成数据，包含三张贴图，如下图所示：
 
-<img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174223110.png" alt="image-20210809174223110" style="zoom: 50%;" /><img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174244902.png" alt="image-20210809174244902" style="zoom: 50%;" /><img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174327559.png" alt="image-20210809174327559" style="zoom: 50%;" />
+<img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174223110.png" alt="image-20210809174223110" style="zoom: 45%;" /><img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174244902.png" alt="image-20210809174244902" style="zoom: 45%;" /><img src="Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210809174327559.png" alt="image-20210809174327559" style="zoom: 45%;" />
 
 - (a) 可见的三角形信息(三角形 ID、重心坐标)
 
@@ -91,7 +91,7 @@ $\large m_{size}$ 和 $\large m_{complexity}$ 使用均值经过归一化。
 
 至此，变形的 quad mesh 达到与 adaptive resolution map 描述一致的 adaptive resolution，即 adaptive resolution map 较大的元素对应较大的网格，较小的元素对应较小的网格。下面就需要计算不同分辨率的 probe data，即对网格的每个像素进行 path-tracing 计算 probe data。但由于变形，这里的像素位置已经不能确定 path-tracing 的光线方向，即像素的 view vector。作者将 forward flow map 进行求逆，得到 inverse flow map，这样就可以确定像素真正的 view vector。
 
-<a name="Fig. 1.2.2"></a>>
+<a name="Fig. 1.2.2"></a>
 
 ![image-20210812111549441](Glossy Probe Reprojection for Interactive Global Illumination.assets/image-20210812111549441.png)
 

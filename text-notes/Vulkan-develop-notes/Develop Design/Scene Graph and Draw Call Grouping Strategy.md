@@ -111,7 +111,7 @@ Scene Graph 表示场景中物体的层级结构，是场景物体的组织形�
 
 对于一个复杂场景而言，具有很多种类的材质、mesh，往往需要很大量的 draw call 进行绘制，但 draw call 的固有开销又限制了实时条件下硬件能支持的最大数量。在 Nvidia 有关 Draw Call 优化 [[1]](#[1]) 的演讲中有提到，draw call 会有固有的驱动层的参数验证开销，这在当时是最大的瓶颈，而这种验证开销是由管线状态改变导致的，下面是不同管线状态改变相对开销对比：
 
-<img src="Scene Graph and Draw Call Grouping Strategy.assets/image-20220714105828144.png" alt="image-20220714105828144" style="zoom: 30%;" />
+<img src="../../source/images/Scene Graph and Draw Call Grouping Strategy.assets/image-20220716235240036.png" alt="image-20220716235240036" style="zoom: 30%;" />
 
 可以看出 render target、shader、texture 的开销依次降低，想要支持的 draw call 数量更大，就要减少这些状态改变。其中提高一些策略：
 
