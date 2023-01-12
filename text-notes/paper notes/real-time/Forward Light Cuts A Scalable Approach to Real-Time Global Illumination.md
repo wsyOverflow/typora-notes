@@ -178,7 +178,7 @@ $$
 
 ##### 1. Pipeline 描述
 
-本论文提出的技术共用到三个 geometry pass，其中两个主要 pass 用于生成 GBuffer 和生成并 Splat VPLs。第三个 pass 用于处理 Divergent triangle。如下图所示
+本论文提出的技术共用到三个 geometry pass，其中两个主要 pass 用于生成 GBuffer 和生成 Splat VPLs。第三个 pass 用于处理 Divergent triangle。如下图所示
 
 <img src="Forward Light Cuts A Scalable Approach to Real-Time Global Illumination.assets/image-20210718161413495.png" alt="image-20210718161413495" style="zoom: 50%;" />
 

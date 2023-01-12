@@ -16,7 +16,7 @@
 
 ### 1. Probe 预计算
 
-Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 path-tracer 计算得到。glossy BRDF 需要较多的采样才能得到平滑的着色，如果在整个场景中的每个 probe 的所有方向都收集同样多样本的信息，会使得 probe 数据存储消耗过大。因此作者提出 adaptive probe resolution，即根据不同位置、不同视角观察到的几何信息来评估该位置需要的 probe resolution ，高分辨率对应高样本数，低分辨率对应低样本数。先介绍一下本论文使用的 probe data 存储的数据
+Probe 中存储实时渲染过程中需要使用的全局光照信息，通过 path-tracer 计算得到。glossy BRDF 需要较多的采样才能得到平滑的着色，如果在整个场景中的每个 probe 的所有方向都收集同样多样本的信息，会使得 probe 数据存储消耗过大。因此作者提出 adaptive probe resolution，即根据不同位置、不同视角观察到的几何信息来评估该位置需要的 probe resolution，高分辨率对应高样本数，低分辨率对应低样本数。先介绍一下本论文使用的 probe data 存储的数据
 
 #### 1.1 Per Probe Data
 
@@ -71,7 +71,7 @@ $$
      m_{complexity}=\frac{1}{N^2}\sum\limits^{N-1}_{p=0}\sum\limits^{N-1}_{q=0}w_{p,q}||\mathbf{b}_{p,q}*m_{norm}||_1
      $$
 
-     - [ ] 2D Discrete consine transform [[2]](#[2]): $\mathbf{b}$​ 是 basis function，basis function 与 法线的卷积用来分析 local neighborhood 的频率信息
+     - [ ] 2D Discrete consine transform [[2]](#[2]): $\mathbf{b}$​ 是 basis function，basis function 与法线的卷积用来分析 local neighborhood 的频率信息
      
      $\large w_{p,q} =||[p,q]||^k$ 权重用来确保高频对几何复杂度贡献更高，论文中取 $N=16,k=5$。
 
@@ -85,9 +85,9 @@ $\large m_{size}$ 和 $\large m_{complexity}$ 使用均值经过归一化。
 
 - [ ] 需要理解 [[3]](#[3]) 的数学原理，描述下面过程的细节
 
-1. 将每个 proble 对应的 3D grid 进行离散等划分，得到均分的四边形网格 quad mesh (应该是 3D grid 的六面划分成 四边形网格)，并且 adaptive resolution map 中每一个元素对应一个 quad mesh。
+1. 将每个 proble 对应的 3D grid 进行离散等划分，得到均分的四边形网格 quad mesh (应该是 3D grid 的六面划分成四边形网格)，并且 adaptive resolution map 中每一个元素对应一个 quad mesh。
 2. 根据 adaptive resolution map ，求解 quasi-harmonic equation ，得到 forward flow map。
-3. forward flow map 指示如何调整 quad mesh 的顶点，不断对 quad mesh 变形，最终达到与 apaptive resolution map 相一致的参数化。probe 对应的 3D  grid 最终变形为如图 [Fig. 1.2.2(h)](#Fig. 1.2.2) 所示。
+3. forward flow map 指示如何调整 quad mesh 的顶点，不断对 quad mesh 变形，最终达到与 apaptive resolution map 相一致的参数化。probe 对应的 3D grid 最终变形为如图 [Fig. 1.2.2(h)](#Fig. 1.2.2) 所示。
 
 至此，变形的 quad mesh 达到与 adaptive resolution map 描述一致的 adaptive resolution，即 adaptive resolution map 较大的元素对应较大的网格，较小的元素对应较小的网格。下面就需要计算不同分辨率的 probe data，即对网格的每个像素进行 path-tracing 计算 probe data。但由于变形，这里的像素位置已经不能确定 path-tracing 的光线方向，即像素的 view vector。作者将 forward flow map 进行求逆，得到 inverse flow map，这样就可以确定像素真正的 view vector。
 
@@ -144,7 +144,7 @@ glossy 光线路径的全局光照渲染概要：
 
 #### 2.1 On-the-fly Reflection Position Estimation
 
-当相机由 $\mathbf{p}$​​​ 移动到 $\mathbf{p'}$​​​ 时，作者基于 specular path perturbation 理论来确定 $\mathbf{x}$​​​ 移动到的位置 $\mathbf{x'}$​​​。这样的移动描述的其实是镜面反射路径$\mathcal{S}_1$​​​($p\rightarrow x\rightarrow q$​​​) 到 $\mathcal{S}_2$​​​($p'\rightarrow x'\rightarrow q$​​​​) 的 specular motion。其中反射路径 $\mathcal{S}_1$​​​​ 在 G-buffer 光栅化后已经确定，那么只有 $\mathbf{x'}$​​​ 是未知的。
+当相机由 $\mathbf{p}$​​​ 移动到 $\mathbf{p'}$​​​ 时，作者基于 specular path perturbation 理论来确定 $\mathbf{x}$​​​ 移动到的位置 $\mathbf{x'}$​​​。这样的移动描述的其实是镜面反射路径 $\mathcal{S}_1$​​​($p\rightarrow x\rightarrow q$​​​) 到 $\mathcal{S}_2$​​​($p'\rightarrow x'\rightarrow q$​​​​) 的 specular motion。其中反射路径 $\mathcal{S}_1$​​​​ 在 G-buffer 光栅化后已经确定，那么只有 $\mathbf{x'}$​​​ 是未知的。
 
 - [ ] 基于 specular path perturbation [[5]](#[5]) 理论，此时问题转化为：已知 $\Delta p=p'-p$​​，近似 $\Delta x=x-x'$​​，从而得到 $x'=x+\Delta x$​​.
   							                        $$\large \Delta x=J\Delta p+[\Delta p]^TH[\Delta p]$$​​
@@ -162,16 +162,16 @@ glossy 光线路径的全局光照渲染概要：
 
 **评估 probe sample 的优劣**：接下来使用 [Fig 2(b)](#Fig 2) 中的符号，probe view 下的 reflector position $r_p$、normal $n_p$ 和 reflected position $R_p$；novel view 下对应的 $r_v$、$n_v$ 和 $R_v$​ 。设计 energy function 来评估 probe sample 优劣的四个标准：
 
-- novel view sample($R_v$) 和 probe view samples($R_p$) 更倾向于位于同一表面。如果二者的材质 ID 不同，则惩罚总 energy，即乘上 $\large s_a=10$. 因此只有在其他样本不可用时，才会选用材质不匹配的样本。
+- novel view sample($R_v$) 和 probe view samples($R_p$) 更倾向于位于同一表面。如果二者的材质 ID 不同，则惩罚总 energy，即乘上 $\large s_a=10$。因此只有在其他样本不可用时，才会选用材质不匹配的样本。
 
 - $\large R_v$ 与 $\large R_p$ 距离近更好，对此引入 $\large s_b=||R_v-R_p||$.
 
 - 相近的表面法线 $n_v$​ 和 $n_p$​ 可以确保一致的光照。对此引入 $\large s_c=1-(n_v\cdot n_p)$​
 
 - 样本应该具有相近的 reflected ray，对此引入：
-                   $$
-                   s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}
-                   $$
+               $$
+               s_d=1-\frac{(R_v-r_v)\cdot (R_p-r_p)}{||R_v-r_v||\cdot||R_p-r_p||}
+               $$
 
 结合以上标准，设计 energy function 为：
 
@@ -227,10 +227,10 @@ $$
 
 假设 $\mathcal{G}_{\rho}$ 是反射平面的 BRDF，在 glossy light probes 预计算中获取；$\mathcal{G}_I$ 是 runtime image filter。我们可以在预计算中降低反射平面的 roughness，得到具有对应新 roughness $\rho'$ 的协方差矩阵 $\sum_{\rho'}$ 的 $\mathcal{G}_{\rho'}$. 使用 Gaussian 分布的性质：
 
-​													$$\large \sum(\mathcal{G}_1*\mathcal{G}_2)=\sum(\mathcal{G}_1)+\sum(\mathcal{G}_2)$$​​, 其中 $\sum$ 是卷积的求和操作，其余为协方差矩阵
-
-现在需要求得一个 image filter $\mathcal{G}_I$ 将降低过 roughness $\rho '$ 的 $\mathcal{G}_{\rho'}$ 重构为原 roughness 的 $\mathcal{G}_{\rho}$​. 利用上述性质，可以得到
-
+$$
+\sum(\mathcal{G}_1*\mathcal{G}_2)=\sum(\mathcal{G}_1)+\sum(\mathcal{G}_2)
+$$
+其中 $\sum$ 是卷积的求和操作，其余为协方差矩阵。现在需要求得一个 image filter $\mathcal{G}_I$ 将降低过 roughness $\rho '$ 的 $\mathcal{G}_{\rho'}$ 重构为原 roughness 的 $\mathcal{G}_{\rho}$​. 利用上述性质，可以得到
 $$
 \sum_I=\sum_{\rho}-\sum_{\rho'}
 $$

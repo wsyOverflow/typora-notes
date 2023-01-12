@@ -48,7 +48,7 @@ $$
 
 - 单位立体角：$d\omega = \frac{dA}{r^2}=sin\theta d\theta d\phi$
 
-- 球面的微分立体角：$\Omega=\int_{S^2}d\omega=\int_0^{2\pi}\int_0^{\pi}sin\theta d\theta d\phi=4\pi$，其中 $S^2$ 是求面积
+- 球面的微分立体角：$\Omega=\int_{S^2}d\omega=\int_0^{2\pi}\int_0^{\pi}sin\theta d\theta d\phi=4\pi$，其中 $S^2$ 是球面积
 
   > $dA$ 的证明，$dA$ 可看作 $d\theta$ 和 $d\phi$ 对应的微分弧组成的小矩形，如下图中红色弧线与蓝色弧线
   >

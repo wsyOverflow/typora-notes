@@ -43,7 +43,7 @@ $$
 
 ### 1. Resample Importance Sampling(RIS)
 
-由 $\eqref{MIS MC}$ 可以看出，MIS 是对着色项的线性组合的采样，而另一种可选的采样策略是对其中一些项的乘积进行近似成比例地采样，这就是 RIS 实现的策略。RIS 从 source PDF $p$ 中生成 $M\geq 1$ 个候选样本 $\boldsymbol{x}={x_1,\cdots,x_M}$，$p$ 选择次佳但易于采样地分布，如 $p \propto L_e $。然后从这个候选池中使用以下离散分布概率进行随机选取 $z\in\{1,\cdots,M\}$，
+由 $\eqref{MIS MC}$ 可以看出，MIS 是对着色项的线性组合的采样，而另一种可选的采样策略是对其中一些项的乘积进行近似成比例地采样，这就是 RIS 实现的策略。RIS 从 source PDF $p$ 中生成 $M\geq 1$ 个候选样本 $\boldsymbol{x}={x_1,\cdots,x_M}$，$p$ 选择次佳但易于采样地分布，如 $p \propto L_e $。然后从这个候选池中使用以下离散概率分布进行随机选取 $z\in\{1,\cdots,M\}$，
 $$
 p(z\mid \boldsymbol{x})=\frac{\mathrm{w}(x_z)}{\sum^M_{i=1}\mathrm{w}(x_i)} \quad with \quad \mathrm{w}(x)=\frac{\hat{p}(x)}{p(x)} \tag{5}\label{discrete PDF}
 $$
@@ -84,7 +84,7 @@ $$
 
 <center>算法 1</center>
 
-$\eqref{1-sample RIS}$ 式的计算需要候选样本数量 $M$，这是算法输入，是已知的；$\mathrm{w}_{sum}$ ，算法输出；$\hat{p}(y)$，$y$ 是算法选出的样本，$\hat{p}$ 是预设 target PDF。
+$\eqref{1-sample RIS}$ 式的计算需要候选样本数量 $M$，这是算法输入，是已知的；$\mathrm{w}_{sum}$，算法输出；$\hat{p}(y)$，$y$ 是算法选出的样本，$\hat{p}$ 是预设 target PDF，本文使用的是代入样本到被积函数后的颜色转为亮度。
 
 ### 2. Weighted Reservoir Sampling(WRS)
 
@@ -100,19 +100,15 @@ Reservoir sampling 按照 input stream 的次序来处理其中的元素，保�
 $$
 \frac{\mathrm{w}(x_{m+1})}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}
 $$
-因此任意之前的样本 $x_i$ 在 reservoir  内的概率(即已在 reservoir 中，且不会被下一个样本替换掉的概率)为：
+因此任意之前的样本 $x_i$ 在 reservoir 内的概率(即已在 reservoir 中，且不会被下一个样本替换掉的概率)为：
 $$
 \frac{\mathrm{w}(x_i)}{\sum^m_{j=1}\mathrm{w}(x_j)}\left(1-\frac{\mathrm{w}(x_{m+1})}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}\right)=\frac{\mathrm{w}(x_i)}{\sum^{m+1}_{j=1}\mathrm{w}(x_j)}
 $$
-观察 $\eqref{reservoir CDF}$ 中给出的 reservoir CDF 可知，在处理过一个新的元素后 reservoir 中元素的概率分布依然不变。WRS 算法如下：
+> 可以看出 N 个样本的 reservoir 接收到一个新元素的更新规则是，逐个样本执行更新规则
+
+观察 $\eqref{reservoir CDF}$ 中给出的 reservoir CDF 可知，在处理过一个新的元素后 reservoir 中元素的概率分布依然不变。N=1 时的 WRS 算法如下：
 
 <img src="Spatiotemporal reservoir resampling for real-time ray tracing with dynamic direct lighting.assets/image-20220320183204597.png" alt="image-20220320183204597" style="zoom: 55%;" />
-
-
-
-
-
-
 
 ## Streaming RIS With Spatiotemporal Reuse
 
@@ -164,7 +160,7 @@ Reservoir 样本累积了目前见过的所有样本信息，如果可以基于�
 
 空间复用相邻像素的 reservoir 的步骤如下：
 
-1. 使用 [算法 3](#Algo 3)  RIS(q) 为每个像素生成 $M$ 个候选样本，并将 reservoir 的结果存储在 image-sized buffer 中。
+1. 使用 [算法 3](#Algo 3) RIS(q) 为每个像素生成 $M$ 个候选样本，并将 reservoir 的结果存储在 image-sized buffer 中。
 2. 每个像素选取 $k$ 个邻居像素，并使用 [算法 4](#Algo 4) 结合 $k$ 个邻居像素的 reservoirs 以及自身的 reservoir。
 
 每像素的复杂度为 $O(k+M)$，但产生了 $k\cdot M$ 个候选样本。Spatial Reuse 可以重复多次执行，其中每次都是上个 reuse pass 的输出。对于执行了 $n$ 次空间复用迭代，假设每次迭代都复用不同的相邻像素，那么时间复杂度为 $O(kn+M)$，但产生了 $k^n\cdot M$ 个候选样本。
@@ -287,7 +283,7 @@ $$
 
 **Evaluated Sample Count**：对于 [算法 5](#Algo 5) ，每个像素存储 $N$ 个 reservoir，无偏算法采用 $N=1$，有偏算法采用 $N=4$。
 
-**Reservoir storage and temporal weighting**：每个像素只存储选出的样本 $y$ 及其权重 $W$，候选样本的数量 $M$。对于 temporal reuse，对当前像素产生贡献的候选样本数量会无限制增加，因为每一帧都结合了历史帧的 reservoir。在重采样过程中，这样会导致 temporal sample 加权高度不成比例，作者将历史帧的候选样本数量限制在当前帧 $20\cross M$ 内，这样就限制了时序信息的影响。
+**Reservoir storage and temporal weighting**：每个像素只存储选出的样本 $y$ 及其权重 $W$，候选样本的数量 $M$。对于 temporal reuse，对当前像素产生贡献的候选样本数量会无限制增加，因为每一帧都结合了历史帧的 reservoir。在重采样过程中，这样会导致 temporal sample 加权高度不成比例，作者将历史帧的候选样本数量限制在当前帧 $20\times M$ 内，这样就限制了时序信息的影响。
 
 
 
